@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Class Tracklist</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<style>
+  :root {
+    --bg: #F7F5FB;
+    --surface: #FFFFFF;
+    --surface-alt: #EFEDFA;
+    --border: #E1DEF2;
+    --border-strong: #C9C4E8;
+    --text: #2B2740;
+    --muted: #6F6A8C;
+    --faint: #A29CBF;
+
+    --primary: #E97BB2;
+    --on-primary: #3B1830;
+    --secondary: #9093EF;
+    --on-secondary: #211D42;
+    --support: #B7CE8E;
+    --on-support: #33421F;
+    --matcha: #B7CE8E;
+    --on-matcha: #33421F;
+    --olive: #425D28;
+    --on-olive: #F4F7EC;
+    --danger: #FF2130;
+    --on-danger: #FFFFFF;
+
+    --font-display: 'Baloo 2', ui-rounded, 'SF Pro Rounded', sans-serif;
+    --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+    --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+    --radius-sm: 10px; --radius-md: 16px; --radius-lg: 24px; --radius-pill: 999px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 40px 20px 60px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 2.25rem; letter-spacing: 0.01em; margin: 0; }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; margin: 28px 0 8px; }
+  h2:first-child { margin-top: 4px; }
+  .sub { color: var(--muted); font-size: 0.9rem; margin-top: 6px; line-height: 1.5; }
+  .tabs { display: flex; gap: 0; margin-top: 24px; border-bottom: 1px solid var(--border); }
+  .tab-btn {
+    background: none; border: none; color: var(--muted); font-family: var(--font-body); font-size: 0.85rem;
+    font-weight: 800; padding: 10px 4px; margin-right: 22px; cursor: pointer; border-bottom: 2px solid transparent;
+  }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--primary); }
+  .tab-panel[hidden] { display: none; }
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-4) var(--space-5); margin-top: 10px; }
+  .provider-block { padding: 10px 0; }
+  .provider-block + .provider-block { border-top: 1px solid var(--border); }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .row-action { padding-top: 8px; }
+  .provider-name { font-size: 0.92rem; font-weight: 700; }
+  .chip { font-family: var(--font-body); font-weight: 700; font-size: 0.72rem; padding: 4px 12px; border-radius: var(--radius-pill); }
+  .chip.connected { background: color-mix(in srgb, var(--support) 35%, var(--surface)); color: var(--on-support); }
+  .chip.off { background: var(--surface-alt); color: var(--muted); }
+  button { font-family: inherit; }
+  button.link-btn { background: none; border: 2px solid var(--border-strong); color: var(--text); font-weight: 700; font-size: 0.8rem; padding: 7px 16px; border-radius: var(--radius-pill); cursor: pointer; }
+  button.link-btn:hover { border-color: var(--secondary); }
+  button.link-btn.danger { color: var(--danger); border-color: var(--danger); }
+  input[type=text], input[type=password], input[type=email] {
+    background: var(--bg); color: var(--text); border: 2px solid var(--border-strong);
+    border-radius: var(--radius-md); padding: 9px 12px; font-size: 0.85rem; width: 100%; font-family: var(--font-body);
+  }
+  input:focus-visible { outline: none; border-color: var(--primary); }
+  .apple-form { display: none; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .apple-form.open { display: flex; }
+  .small-note { font-size: 0.75rem; color: var(--faint); margin-top: 4px; }
+  .controls { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+  button.primary, button.stop, button.start { font-weight: 800; font-size: 0.95rem; border: none; border-radius: var(--radius-pill); padding: 13px 22px; cursor: pointer; }
+  button.primary { background: var(--primary); color: var(--on-primary); }
+  button.start { background: var(--olive); color: var(--on-olive); }
+  button.stop { background: transparent; color: var(--danger); border: 2px solid var(--danger); }
+  button:disabled { opacity: 0.4; cursor: default; }
+  button.stop:disabled { opacity: 0.75; }
+  .status { margin-top: 14px; background: var(--surface-alt); border-left: 4px solid var(--border-strong); padding: 12px 14px; font-size: 0.85rem; color: var(--muted); border-radius: var(--radius-sm); }
+  .status.listening { border-left-color: var(--primary); color: var(--text); }
+  .status.detected { border-left-color: var(--danger); color: var(--text); }
+  #list { margin-top: 20px; }
+  .track { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .track-info .title { font-size: 0.92rem; font-weight: 700; }
+  .track-info .artist { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+  .track-links { display: flex; gap: 8px; margin-top: 6px; }
+  .track-link { font-size: 0.7rem; font-weight: 700; text-decoration: none; padding: 3px 10px; border-radius: var(--radius-pill); }
+  .track-link.spotify { background: rgba(29,185,84,0.15); color: #1DB954; }
+  .track-link.apple { background: rgba(252,61,86,0.15); color: #FC3D56; }
+  .track-time { font-family: var(--font-mono); color: var(--faint); font-size: 0.72rem; white-space: nowrap; }
+  .empty { color: var(--muted); font-size: 0.85rem; margin-top: 20px; }
+  .event-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; }
+  .event-row + .event-row { border-top: 1px solid var(--border); }
+  .event-row input[type=checkbox] { margin-top: 3px; accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
+  .event-title { font-size: 0.88rem; font-weight: 600; }
+  .event-time { font-family: var(--font-mono); color: var(--muted); font-size: 0.74rem; margin-top: 3px; }
+  .event-tag { font-family: var(--font-mono); font-size: 0.65rem; color: var(--danger); margin-left: 6px; }
+  .events-empty { color: var(--muted); font-size: 0.82rem; }
+  .export { margin-top: 20px; background: transparent; color: var(--muted); border: 2px solid var(--border-strong); border-radius: var(--radius-pill); padding: 8px 16px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+  .export:hover { border-color: var(--primary); color: var(--text); }
+  .session-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-top: 8px; overflow: hidden; }
+  .session-head { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: none; border: none; color: inherit; cursor: pointer; text-align: left; font-family: inherit; }
+  .session-title { font-size: 0.9rem; font-weight: 700; }
+  .session-meta { font-family: var(--font-mono); color: var(--muted); font-size: 0.74rem; margin-top: 3px; }
+  .session-tracks { border-top: 1px solid var(--border); padding: 4px 14px; }
+  .session-track { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .session-track:last-child { border-bottom: none; }
+  .session-track-num { font-family: var(--font-mono); color: var(--faint); font-size: 0.72rem; width: 16px; text-align: right; flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Class Tracklist</h1>
+  <div class="sub">Listens for a few seconds every 2 minutes and builds a list of what played.</div>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="home">Home</button>
+    <button class="tab-btn" data-tab="history">History</button>
+    <button class="tab-btn" data-tab="settings">Settings</button>
+  </nav>
+
+  <section class="tab-panel" id="tab-home">
+    <h2>Listening</h2>
+    <div class="section">
+      <div class="small-note">First, enable microphone access once so auto-start can work without you tapping anything mid-class.</div>
+      <div class="controls">
+        <button class="primary" id="enableMicBtn">Enable auto-listen</button>
+      </div>
+      <div class="controls" style="margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border);">
+        <button class="start" id="startBtn">Start manually</button>
+        <button class="stop" id="stopBtn" disabled>Stop</button>
+      </div>
+    </div>
+
+    <h2>Upcoming events</h2>
+    <div class="section">
+      <div class="small-note">Pick specific events to listen during, even if their title doesn't match a keyword in Settings. Events already auto-detected by keyword are checked and locked.</div>
+      <div id="eventsList" style="margin-top:10px;"></div>
+      <div class="controls" style="margin-top:10px;">
+        <button class="link-btn" id="refreshEvents">Refresh</button>
+      </div>
+    </div>
+
+    <div class="status" id="status">Checking your calendars…</div>
+
+    <div id="list"></div>
+    <div class="empty" id="emptyMsg">No songs caught yet.</div>
+    <button class="export" id="exportBtn" style="display:none;">Copy list as text</button>
+  </section>
+
+  <section class="tab-panel" id="tab-history" hidden>
+    <h2>History</h2>
+    <div id="historyList"></div>
+    <div class="empty" id="historyEmpty">No past sessions yet.</div>
+  </section>
+
+  <section class="tab-panel" id="tab-settings" hidden>
+    <h2>Calendars</h2>
+    <div class="section">
+      <div class="provider-block">
+        <div class="row">
+          <span class="provider-name">Google Calendar</span>
+          <span id="chip-google" class="chip off">Not connected</span>
+        </div>
+        <div class="row-action" id="row-google-action"></div>
+      </div>
+
+      <div class="provider-block">
+        <div class="row">
+          <span class="provider-name">Outlook Calendar</span>
+          <span id="chip-microsoft" class="chip off">Not connected</span>
+        </div>
+        <div class="row-action" id="row-microsoft-action"></div>
+      </div>
+
+      <div class="provider-block">
+        <div class="row">
+          <span class="provider-name">iCloud Calendar</span>
+          <span id="chip-apple" class="chip off">Not connected</span>
+        </div>
+        <div class="row-action" id="row-apple-action"></div>
+        <div class="apple-form" id="appleForm">
+          <input type="email" id="appleEmail" placeholder="Apple ID email" />
+          <input type="password" id="applePassword" placeholder="App-specific password" />
+          <div class="small-note">Generate one at appleid.apple.com — your regular Apple ID password won't work here.</div>
+          <button class="link-btn" id="appleSubmit">Connect</button>
+        </div>
+      </div>
+    </div>
+
+    <h2>Class keywords</h2>
+    <div class="section">
+      <input type="text" id="keywordsInput" placeholder="yoga, hiit, spin, pilates..." />
+      <div class="small-note">Comma-separated. An event title matching any of these counts as a class.</div>
+      <div class="controls" style="margin-top:10px;">
+        <button class="link-btn" id="saveKeywords">Save</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  const CAPTURE_INTERVAL_MS = 2 * 60 * 1000;
+  const CLIP_LENGTH_MS = 7000;
+  const POLL_MS = 30 * 1000;
+
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  const enableMicBtn = document.getElementById('enableMicBtn');
+  const statusEl = document.getElementById('status');
+  const listEl = document.getElementById('list');
+  const emptyMsg = document.getElementById('emptyMsg');
+  const exportBtn = document.getElementById('exportBtn');
+  const keywordsInput = document.getElementById('keywordsInput');
+
+  let stream = null;
+  let intervalId = null;
+  let tracks = [];
+  let running = false;
+  let autoStarted = false;
+  let micEnabled = false;
+  let currentSessionId = null;
+
+  // ---- tab navigation ----
+
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabPanels = {
+    home: document.getElementById('tab-home'),
+    history: document.getElementById('tab-history'),
+    settings: document.getElementById('tab-settings'),
+  };
+
+  tabButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      Object.values(tabPanels).forEach((panel) => (panel.hidden = true));
+      tabPanels[btn.dataset.tab].hidden = false;
+    });
+  });
+
+  // ---- mic capture loop (same mechanics as manual mode) ----
+
+  function setStatus(text, mode) {
+    statusEl.textContent = text;
+    statusEl.classList.remove('listening', 'detected');
+    if (mode) statusEl.classList.add(mode);
+  }
+
+  function renderTracks() {
+    if (tracks.length === 0) {
+      emptyMsg.style.display = 'block';
+      exportBtn.style.display = 'none';
+      listEl.innerHTML = '';
+      return;
+    }
+    emptyMsg.style.display = 'none';
+    exportBtn.style.display = 'inline-block';
+    listEl.innerHTML = tracks.map((t) => `
+      <div class="track">
+        <div class="track-info">
+          <div class="title">${escapeHtml(t.title)}</div>
+          <div class="artist">${escapeHtml(t.artist)}</div>
+          ${trackLinksHTML(t)}
+        </div>
+        <div class="track-time">${t.time}</div>
+      </div>
+    `).join('');
+  }
+
+  function trackLinksHTML(t) {
+    const links = [];
+    if (t.spotifyUrl) links.push(`<a class="track-link spotify" href="${t.spotifyUrl}" target="_blank">Spotify</a>`);
+    if (t.appleMusicUrl) links.push(`<a class="track-link apple" href="${t.appleMusicUrl}" target="_blank">Apple Music</a>`);
+    return links.length ? `<div class="track-links">${links.join('')}</div>` : '';
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  function isDuplicate(title, artist) {
+    const last = tracks[0];
+    return last && last.title === title && last.artist === artist;
+  }
+
+  async function captureAndSend() {
+    if (!running || !stream) return;
+    setStatus(autoStarted ? 'Auto-listening for your class…' : 'Listening…', 'listening');
+    const recorder = new MediaRecorder(stream);
+    const chunks = [];
+    recorder.ondataavailable = (e) => chunks.push(e.data);
+    const stopped = new Promise((resolve) => (recorder.onstop = resolve));
+    recorder.start();
+    setTimeout(() => recorder.state !== 'inactive' && recorder.stop(), CLIP_LENGTH_MS);
+    await stopped;
+    if (!running) return;
+
+    const blob = new Blob(chunks, { type: recorder.mimeType || 'audio/webm' });
+    const form = new FormData();
+    form.append('clip', blob, 'clip.webm');
+    if (currentSessionId) form.append('sessionId', currentSessionId);
+    try {
+      const res = await fetch('/api/recognize', { method: 'POST', body: form });
+      const data = await res.json();
+      if (data.matched && !isDuplicate(data.title, data.artist)) {
+        tracks.unshift({
+          title: data.title,
+          artist: data.artist,
+          spotifyUrl: data.spotifyUrl,
+          appleMusicUrl: data.appleMusicUrl,
+          time: new Date().toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
+        });
+        renderTracks();
+      }
+    } catch (e) { /* skip a failed capture, next one will try again */ }
+  }
+
+  async function start(auto, event) {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      setStatus(auto ? 'Class detected, but mic access isn\'t enabled — tap "Enable auto-listen".' : 'Microphone permission is needed to listen for songs.', null);
+      return;
+    }
+    running = true;
+    autoStarted = !!auto;
+    tracks = [];
+    renderTracks();
+    try {
+      const res = await fetch('/api/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          eventTitle: event?.title || null,
+          eventSource: event?.source || null,
+          eventId: event?.id || null,
+        }),
+      });
+      const session = await res.json();
+      currentSessionId = session.id;
+    } catch (e) { currentSessionId = null; }
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
+    captureAndSend();
+    intervalId = setInterval(captureAndSend, CAPTURE_INTERVAL_MS);
+  }
+
+  function stop() {
+    running = false;
+    autoStarted = false;
+    clearInterval(intervalId);
+    if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
+    startBtn.disabled = false;
+    stopBtn.disabled = true;
+    setStatus('Stopped.', null);
+    if (currentSessionId) {
+      fetch(`/api/sessions/${currentSessionId}/end`, { method: 'POST' }).finally(loadHistory);
+      currentSessionId = null;
+    }
+  }
+
+  exportBtn.addEventListener('click', async () => {
+    const text = tracks.map((t) => `${t.time} — ${t.title} by ${t.artist}`).join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      exportBtn.textContent = 'Copied!';
+      setTimeout(() => (exportBtn.textContent = 'Copy list as text'), 1500);
+    } catch (e) { /* clipboard unavailable */ }
+  });
+
+  startBtn.addEventListener('click', () => start(false));
+  stopBtn.addEventListener('click', stop);
+
+  enableMicBtn.addEventListener('click', async () => {
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+      s.getTracks().forEach((t) => t.stop());
+      micEnabled = true;
+      enableMicBtn.textContent = 'Auto-listen enabled';
+      enableMicBtn.disabled = true;
+    } catch (e) {
+      setStatus('Microphone permission was denied.', null);
+    }
+  });
+
+  // ---- calendar status polling / auto-start ----
+
+  async function pollClassStatus() {
+    try {
+      const res = await fetch('/api/class-status');
+      const data = await res.json();
+      if (data.inClass) {
+        if (!running) {
+          await start(true, data.event);
+          if (running) setStatus(`Detected class: ${data.event.title} — listening automatically`, 'detected');
+        }
+      } else if (autoStarted && running) {
+        stop();
+        setStatus('Class ended — stopped listening.', null);
+      } else if (!running) {
+        setStatus(data.event ? `Next class: ${data.event.title} at ${new Date(data.event.start).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}` : 'No upcoming class detected on your calendars.', null);
+      }
+    } catch (e) {
+      // leave whatever status is currently shown
+    }
+  }
+
+  // ---- calendar connect UI ----
+
+  function providerActionHTML(provider, connected) {
+    if (provider === 'apple') {
+      return connected
+        ? '<button class="link-btn danger" data-disconnect="apple">Disconnect</button>'
+        : '<button class="link-btn" id="appleToggle">Connect</button>';
+    }
+    return connected
+      ? `<button class="link-btn danger" data-disconnect="${provider}">Disconnect</button>`
+      : `<a href="/auth/${provider}/login" target="_blank"><button class="link-btn">Connect</button></a>`;
+  }
+
+  async function refreshCalendarStatus() {
+    const res = await fetch('/api/calendars/status');
+    const data = await res.json();
+
+    ['google', 'microsoft', 'apple'].forEach((p) => {
+      const chip = document.getElementById(`chip-${p}`);
+      chip.textContent = data[p] ? 'Connected' : 'Not connected';
+      chip.classList.toggle('connected', !!data[p]);
+      chip.classList.toggle('off', !data[p]);
+      document.getElementById(`row-${p}-action`).innerHTML = providerActionHTML(p, data[p]);
+    });
+
+    document.querySelectorAll('[data-disconnect]').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        await fetch(`/api/calendars/${btn.dataset.disconnect}`, { method: 'DELETE' });
+        refreshCalendarStatus();
+      });
+    });
+
+    const appleToggle = document.getElementById('appleToggle');
+    if (appleToggle) {
+      appleToggle.addEventListener('click', () => {
+        document.getElementById('appleForm').classList.toggle('open');
+      });
+    }
+
+    if (!keywordsInput.value) keywordsInput.value = (data.keywords || []).join(', ');
+  }
+
+  document.getElementById('appleSubmit').addEventListener('click', async () => {
+    const username = document.getElementById('appleEmail').value.trim();
+    const appPassword = document.getElementById('applePassword').value.trim();
+    if (!username || !appPassword) return;
+    const res = await fetch('/api/calendars/apple/connect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, appPassword }),
+    });
+    if (res.ok) {
+      document.getElementById('appleForm').classList.remove('open');
+      refreshCalendarStatus();
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Could not connect iCloud Calendar.');
+    }
+  });
+
+  document.getElementById('saveKeywords').addEventListener('click', async () => {
+    const keywords = keywordsInput.value.split(',').map((k) => k.trim()).filter(Boolean);
+    await fetch('/api/calendars/keywords', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keywords }),
+    });
+  });
+
+  // ---- manual event picker ----
+
+  function fmtEventTime(startIso, endIso) {
+    const s = new Date(startIso), e = new Date(endIso);
+    const dateStr = s.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    const timeStr = s.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    const endStr = e.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    return `${dateStr}, ${timeStr}–${endStr}`;
+  }
+
+  async function loadEvents() {
+    const container = document.getElementById('eventsList');
+    container.innerHTML = '<div class="events-empty">Loading…</div>';
+    try {
+      const res = await fetch('/api/calendars/events?days=7');
+      const evts = await res.json();
+      if (!evts.length) {
+        container.innerHTML = '<div class="events-empty">No upcoming events found. Connect a calendar above first.</div>';
+        return;
+      }
+      container.innerHTML = evts.map((e, i) => {
+        const key = `${e.source}:${e.id}`;
+        const checked = e.keywordMatch || e.selected;
+        const disabled = e.keywordMatch;
+        return `
+          <div class="event-row">
+            <input type="checkbox" data-key="${key}" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} />
+            <div>
+              <div class="event-title">${escapeHtml(e.title)}${e.keywordMatch ? '<span class="event-tag">auto-detected</span>' : ''}</div>
+              <div class="event-time">${fmtEventTime(e.start, e.end)} · ${e.source}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.querySelectorAll('input[type=checkbox]:not([disabled])').forEach((cb) => {
+        cb.addEventListener('change', saveSelectedEvents);
+      });
+    } catch (e) {
+      container.innerHTML = '<div class="events-empty">Couldn\'t load events.</div>';
+    }
+  }
+
+  async function saveSelectedEvents() {
+    const selected = Array.from(document.querySelectorAll('#eventsList input[type=checkbox]:checked:not([disabled])'))
+      .map((cb) => cb.dataset.key);
+    await fetch('/api/calendars/selected-events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ selected }),
+    });
+  }
+
+  document.getElementById('refreshEvents').addEventListener('click', loadEvents);
+
+  // ---- history ----
+
+  const historyList = document.getElementById('historyList');
+  const historyEmpty = document.getElementById('historyEmpty');
+
+  function fmtSessionMeta(session) {
+    const started = new Date(session.startedAt);
+    const dateStr = started.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    const timeStr = started.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    const count = session.tracks.length;
+    return `${dateStr}, ${timeStr} · ${count} track${count === 1 ? '' : 's'}`;
+  }
+
+  async function loadHistory() {
+    try {
+      const res = await fetch('/api/sessions?limit=30');
+      const sessions = await res.json();
+      if (!sessions.length) {
+        historyEmpty.style.display = 'block';
+        historyList.innerHTML = '';
+        return;
+      }
+      historyEmpty.style.display = 'none';
+      historyList.innerHTML = sessions.map((s, i) => `
+        <div class="session-card">
+          <button class="session-head" data-idx="${i}">
+            <div>
+              <div class="session-title">${escapeHtml(s.eventTitle)}</div>
+              <div class="session-meta">${fmtSessionMeta(s)}</div>
+            </div>
+          </button>
+          <div class="session-tracks" style="display:none;">
+            ${s.tracks.length ? s.tracks.map((t, j) => `
+              <div class="session-track">
+                <span class="session-track-num">${String(j + 1).padStart(2, '0')}</span>
+                <div class="track-info" style="flex:1;">
+                  <div class="title">${escapeHtml(t.title)}</div>
+                  <div class="artist">${escapeHtml(t.artist)}</div>
+                  ${trackLinksHTML(t)}
+                </div>
+              </div>
+            `).join('') : '<div class="events-empty">Nothing was recognized during this session.</div>'}
+          </div>
+        </div>
+      `).join('');
+
+      historyList.querySelectorAll('.session-head').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const body = btn.nextElementSibling;
+          body.style.display = body.style.display === 'none' ? 'block' : 'none';
+        });
+      });
+    } catch (e) {
+      historyList.innerHTML = '';
+      historyEmpty.textContent = "Couldn't load history.";
+      historyEmpty.style.display = 'block';
+    }
+  }
+
+  renderTracks();
+  refreshCalendarStatus();
+  loadEvents();
+  loadHistory();
+  pollClassStatus();
+  setInterval(pollClassStatus, POLL_MS);
+</script>
+</body>
+</html>

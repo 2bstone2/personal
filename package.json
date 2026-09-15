@@ -1,0 +1,20 @@
+{
+  "name": "calendar-class-app",
+  "version": "0.1.0",
+  "description": "Detects a workout class on your calendar and automatically listens for songs during it.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "multer": "^1.4.5-lts.1",
+    "node-ical": "^0.18.0",
+    "tsdav": "^2.1.3"
+  }
+}
