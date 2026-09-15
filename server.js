@@ -7,6 +7,7 @@ const recognizeRoutes = require("./src/routes/recognize");
 const calendarRoutes = require("./src/routes/calendars");
 const statusRoutes = require("./src/routes/status");
 const sessionRoutes = require("./src/routes/sessions");
+const spotifyRoutes = require("./src/routes/spotify");
 
 const app = express();
 app.use(cors());
@@ -17,6 +18,7 @@ app.use(recognizeRoutes);
 app.use(calendarRoutes);
 app.use(statusRoutes);
 app.use(sessionRoutes);
+app.use(spotifyRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Calendar class app running at http://localhost:${PORT}`));

@@ -48,6 +48,7 @@ async function listEvents(username, appPassword, startIso, endIso) {
         events.push({
           id: item.uid || key,
           title: item.summary || "(untitled)",
+          location: item.location || null,
           start: new Date(item.start).toISOString(),
           end: new Date(item.end).toISOString(),
           source: "apple",

@@ -59,6 +59,7 @@ async function listEvents(refreshToken, startIso, endIso) {
   return (res.data.items || []).map((e) => ({
     id: e.id,
     title: e.summary || "(untitled)",
+    location: e.location || null,
     start: e.start?.dateTime || e.start?.date,
     end: e.end?.dateTime || e.end?.date,
     source: "google",

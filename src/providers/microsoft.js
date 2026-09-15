@@ -61,6 +61,7 @@ async function listEvents(refreshToken, startIso, endIso) {
   return (res.data.value || []).map((e) => ({
     id: e.id,
     title: e.subject || "(untitled)",
+    location: e.location?.displayName || null,
     start: e.start?.dateTime ? e.start.dateTime + "Z" : null,
     end: e.end?.dateTime ? e.end.dateTime + "Z" : null,
     source: "microsoft",

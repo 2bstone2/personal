@@ -35,13 +35,27 @@ function matchesKeyword(title, keywords) {
   return keywords.some((k) => lower.includes(k));
 }
 
+// Fixed heuristic, not user-configurable: catches events booked at a gym or
+// studio even when the title itself doesn't mention a class keyword.
+const FITNESS_LOCATION_TERMS = ["studio", "gym", "fitness"];
+
+function matchesFitnessLocation(location) {
+  const lower = (location || "").toLowerCase();
+  return FITNESS_LOCATION_TERMS.some((t) => lower.includes(t));
+}
+
+function isAutoMatch(event, keywords) {
+  return matchesKeyword(event.title, keywords) || matchesFitnessLocation(event.location);
+}
+
 function eventKey(event) {
   return `${event.source}:${event.id}`;
 }
 
 // Looks 2 hours back and 12 hours ahead — enough to catch a class in progress
 // or find the next one coming up today. An event counts if it matches a
-// keyword OR was manually picked, regardless of its title.
+// keyword, its location looks like a gym/studio, or it was manually picked,
+// regardless of its title.
 async function getClassStatus() {
   const now = new Date();
   const start = new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString();
@@ -50,7 +64,7 @@ async function getClassStatus() {
   const selected = new Set(store.getSelectedEvents());
 
   const events = (await getAllEvents(start, end)).filter(
-    (e) => matchesKeyword(e.title, keywords) || selected.has(eventKey(e))
+    (e) => isAutoMatch(e, keywords) || selected.has(eventKey(e))
   );
 
   const current = events.find((e) => new Date(e.start) <= now && now <= new Date(e.end));
@@ -72,7 +86,7 @@ async function getUpcomingEvents(days = 7) {
   const events = await getAllEvents(start, end);
   return events.map((e) => ({
     ...e,
-    keywordMatch: matchesKeyword(e.title, keywords),
+    autoMatch: isAutoMatch(e, keywords),
     selected: selected.has(eventKey(e)),
   }));
 }

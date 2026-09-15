@@ -93,6 +93,15 @@ function endSession(id) {
   return session;
 }
 
+function renameSession(id, eventTitle) {
+  const db = load();
+  const session = (db.sessions || []).find((s) => s.id === id);
+  if (!session) return null;
+  session.eventTitle = eventTitle;
+  save(db);
+  return session;
+}
+
 function addTrackToSession(id, track) {
   const db = load();
   const session = (db.sessions || []).find((s) => s.id === id);
@@ -117,6 +126,7 @@ module.exports = {
   setSelectedEvents,
   createSession,
   endSession,
+  renameSession,
   addTrackToSession,
   listSessions,
 };
