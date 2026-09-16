@@ -62,6 +62,7 @@ async function listEvents(refreshToken, startIso, endIso) {
     id: e.id,
     title: e.subject || "(untitled)",
     location: e.location?.displayName || null,
+    description: e.bodyPreview || null,
     start: e.start?.dateTime ? e.start.dateTime + "Z" : null,
     end: e.end?.dateTime ? e.end.dateTime + "Z" : null,
     source: "microsoft",

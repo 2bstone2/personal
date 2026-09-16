@@ -22,9 +22,23 @@ router.post("/api/sessions/:id/rename", (req, res) => {
   res.json(session);
 });
 
+// Links (or unlinks, when eventId is omitted) a session to a calendar/manual
+// event after the fact — works on any session, not just unassigned ones.
+router.post("/api/sessions/:id/link-event", (req, res) => {
+  const { eventTitle, eventSource, eventId } = req.body || {};
+  const session = store.linkSessionToEvent(req.params.id, { eventTitle, eventSource, eventId });
+  if (!session) return res.status(404).json({ error: "Session not found." });
+  res.json(session);
+});
+
 router.get("/api/sessions", (req, res) => {
   const limit = parseInt(req.query.limit, 10) || 50;
   res.json(store.listSessions(limit));
+});
+
+router.delete("/api/sessions", (req, res) => {
+  store.clearSessions();
+  res.json({ cleared: true });
 });
 
 module.exports = router;

@@ -27,6 +27,19 @@ router.post("/api/calendars/selected-events", (req, res) => {
   res.json({ selected: store.setSelectedEvents(selected) });
 });
 
+// A hand-added event with no calendar behind it — start/end are ISO strings.
+// Created already selected, so it's tracked immediately.
+router.post("/api/calendars/manual-events", (req, res) => {
+  const { title, start, end } = req.body || {};
+  if (!start || !end) return res.status(400).json({ error: "start and end are required" });
+  res.json(store.addManualEvent({ title, start, end }));
+});
+
+router.delete("/api/calendars/manual-events/:id", (req, res) => {
+  store.removeManualEvent(req.params.id);
+  res.json({ removed: true });
+});
+
 router.get("/api/calendars/status", (req, res) => {
   res.json({
     google: !!store.getProvider("google"),

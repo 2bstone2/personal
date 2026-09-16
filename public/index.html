@@ -72,6 +72,29 @@
   .live-tag:not([hidden]) { display: inline-flex; }
   .live-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF; flex-shrink: 0; }
 
+  .profile-menu-wrap { position: relative; flex-shrink: 0; }
+  .profile-btn {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--card); border: 1px solid var(--outline);
+    color: var(--text-muted); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0;
+  }
+  .profile-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .profile-btn.has-name { background: var(--live); border-color: var(--live); }
+  .profile-btn.has-name:hover { background: var(--live-deep); border-color: var(--live-deep); }
+  #profileBtnInitial { font-family: var(--font-display); font-weight: 800; font-size: 13px; color: #fff; }
+  .profile-menu {
+    position: absolute; top: calc(100% + 8px); right: 0; background: var(--field); border: 1px solid var(--outline);
+    border-radius: var(--radius-md); padding: 6px; min-width: 150px; z-index: 10;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.35); flex-direction: column; gap: 2px;
+  }
+  .profile-menu:not([hidden]) { display: flex; }
+  .profile-menu button {
+    background: none; border: none; color: var(--text); font-family: var(--font-body); font-size: 13px;
+    font-weight: 600; text-align: left; padding: 9px 10px; border-radius: var(--radius-sm); cursor: pointer;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .profile-menu button:hover { background: var(--card); color: var(--live); }
+  .profile-menu button:hover .pill-dot { display: inline-block; }
+
   .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
   .tab-btn {
     background: var(--card); color: var(--text-muted); font-family: var(--font-body); font-size: 12px;
@@ -97,6 +120,10 @@
   .next-up:not([hidden]) { display: flex; }
   .next-up-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--secondary); text-transform: uppercase; }
   .next-up-value { font-size: 14px; font-weight: 700; }
+  .event-picker { flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid var(--card-hairline); border-bottom: 1px solid var(--card-hairline); }
+  .event-picker:not([hidden]) { display: flex; }
+  .event-picker-option { background: var(--card); border: 1px solid var(--card-hairline); border-radius: var(--radius-md); padding: 14px; text-align: left; cursor: pointer; width: 100%; color: var(--text); font-family: inherit; }
+  .event-picker-option:hover { border-color: var(--live); }
 
   .timer { font-family: var(--font-mono); font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); text-align: center; }
 
@@ -122,15 +149,21 @@
   .actions-row { display: flex; gap: 8px; }
 
   button { font-family: inherit; }
-  button.primary {
-    background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-pill);
-    padding: 14px; font-family: var(--font-body); font-size: 13px; font-weight: 700; cursor: pointer;
-    transition: background 120ms ease;
+  button.primary, button.start, button.stop, button.link-btn, .export {
+    align-items: center; justify-content: center; gap: 0;
+    font-family: var(--font-body); font-weight: 700; cursor: pointer;
+    transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
   }
-  button.primary:hover { background: var(--accent-hover); }
+  button.primary:not([hidden]), button.start:not([hidden]), button.stop:not([hidden]),
+  button.link-btn:not([hidden]), .export:not([hidden]) { display: inline-flex; }
+  button.primary, .export {
+    background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-pill);
+    padding: 14px; font-size: 13px;
+  }
+  .export { flex: 1; }
+  button.primary:hover, .export:hover { background: var(--accent-hover); }
   button.start, button.stop, button.link-btn {
     background: none; border: 1px solid var(--outline); color: var(--text); border-radius: var(--radius-pill);
-    font-family: var(--font-body); font-weight: 700; cursor: pointer; transition: border-color 120ms ease, color 120ms ease;
   }
   button.start, button.stop { padding: 14px 20px; font-size: 13px; }
   button.link-btn { padding: 6px 14px; font-size: 12px; }
@@ -138,10 +171,14 @@
   button.stop:hover { border-color: var(--live); color: var(--live); }
   button.link-btn:hover { border-color: var(--accent); color: var(--accent); }
   button.link-btn.danger { border-color: var(--danger); color: var(--danger); }
+  button.primary::before, button.start::before, button.stop::before, button.link-btn::before, .export::before {
+    content: ''; width: 0; height: 6px; border-radius: 50%; background: var(--live); flex-shrink: 0;
+    overflow: hidden; transition: width 120ms ease, margin-right 120ms ease;
+  }
+  button.primary:hover::before, button.start:hover::before, button.stop:hover::before,
+  button.link-btn:hover::before, .export:hover::before { width: 6px; margin-right: 7px; }
   button:disabled { background: var(--card) !important; color: var(--text-faint) !important; border-color: transparent !important; cursor: default; }
-
-  .export { flex: 1; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-pill); padding: 14px; font-family: var(--font-body); font-size: 13px; font-weight: 700; cursor: pointer; transition: background 120ms ease; }
-  .export:hover { background: var(--accent-hover); }
+  button:disabled::before { display: none; }
 
   .section-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--secondary); }
   .settings-section { display: flex; flex-direction: column; gap: 10px; }
@@ -149,6 +186,7 @@
 
   .provider-block { background: var(--card); border-radius: var(--radius-md); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
   .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .row-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .provider-name { font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
   .provider-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); flex-shrink: 0; display: none; }
   .provider-dot.connected { display: inline-block; }
@@ -156,30 +194,38 @@
   .chip.connected { background: var(--accent); color: var(--on-accent); }
   .chip.off { background: var(--card); color: var(--text-faint); border: 1px solid var(--card-hairline); }
 
-  input[type=text], input[type=password], input[type=email] {
+  input[type=text], input[type=password], input[type=email], input[type=datetime-local] {
     background: var(--card); color: var(--text); border: 1px solid var(--outline);
     border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px; width: 100%; font-family: var(--font-body);
+    color-scheme: dark;
   }
   input::placeholder { color: var(--text-faint); }
-  input:focus-visible { outline: none; border-color: var(--accent); }
+  input:focus-visible { outline: none; border-color: var(--live); }
   .apple-form { display: none; flex-direction: column; gap: 8px; }
   .apple-form.open { display: flex; }
+  .add-event-form { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .add-event-form[hidden] { display: none; }
+  #addEventToggle { margin-top: 10px; }
 
   .small-note { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
   .small-note a { color: var(--secondary); font-weight: 700; text-decoration: none; }
   .small-note a:hover { text-decoration: underline; }
 
   .history-toolbar { display: flex; flex-direction: column; gap: 10px; }
-  .select-wrap { position: relative; display: inline-flex; }
-  select {
-    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+  .history-filters { display: flex; gap: 10px; }
+  .dropdown-wrap { position: relative; display: inline-flex; }
+  .dropdown-btn {
+    display: inline-flex; align-items: center; gap: 8px;
     background: var(--card); color: var(--text); border: 1px solid var(--outline);
-    border-radius: var(--radius-pill); padding: 7px 26px 7px 14px; font-size: 12px; font-weight: 700;
+    border-radius: var(--radius-pill); padding: 7px 14px; font-size: 12px; font-weight: 700;
     font-family: var(--font-body); cursor: pointer;
   }
-  select:focus-visible { outline: none; border-color: var(--accent); }
-  .history-filters { display: flex; gap: 10px; }
-  .select-caret { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); font-size: 9px; color: var(--text-faint); pointer-events: none; }
+  .dropdown-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .dropdown-wrap .profile-menu { left: 0; right: auto; }
+  .select-caret {
+    width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 6px solid var(--text-muted); flex-shrink: 0;
+  }
 
   .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
   .tag-chip-placeholder { background: none; border: 1px dashed var(--accent); color: var(--text-faint); font-style: italic; padding: 5px 13px; font-size: 12px; }
@@ -217,18 +263,22 @@
   .event-row input[type=checkbox]:disabled { cursor: default; }
   .event-title { font-size: 14px; font-weight: 700; }
   .event-time { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; margin-top: 4px; text-transform: uppercase; }
-  .events-empty { color: var(--text-muted); font-size: 13px; }
+  .events-empty { background: var(--card); border-radius: var(--radius-md); padding: 14px; color: var(--text); font-size: 13px; font-weight: 700; }
   .events-empty a { color: var(--secondary); font-weight: 700; text-decoration: none; }
   .events-empty a:hover { text-decoration: underline; }
 
   #historyList { display: flex; flex-direction: column; gap: 8px; }
   .session-card { background: var(--card); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-  .session-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; cursor: pointer; }
-  .session-caret { font-size: 10px; color: var(--text-faint); margin-left: 10px; flex-shrink: 0; transition: transform 0.15s ease; }
+  .session-head { display: flex; align-items: baseline; gap: 10px; cursor: pointer; }
+  .session-caret {
+    width: 0; height: 0; margin-left: 10px; flex-shrink: 0;
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+    border-top: 6px solid var(--text-muted); transition: transform 0.15s ease;
+  }
   .session-head.open .session-caret { transform: rotate(180deg); }
-  .session-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .session-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
   .session-edit-btn { background: none; border: none; color: var(--text-faint); cursor: pointer; padding: 2px 4px; display: inline-flex; align-items: center; }
-  .session-edit-btn:hover { color: var(--secondary); }
+  .session-edit-btn:hover { color: var(--live); }
   .session-title-input {
     font-size: 15px; font-weight: 700; font-family: var(--font-body); color: var(--text);
     background: var(--field); border: 1px solid var(--accent); border-radius: var(--radius-checkbox);
@@ -237,7 +287,13 @@
   .session-count { font-family: var(--font-mono); font-size: 10px; color: var(--accent); text-transform: uppercase; flex-shrink: 0; }
   .session-count.zero { color: var(--text-faint); }
   .session-meta { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
-  .session-actions { border-top: 1px solid var(--card-hairline); padding-top: 10px; }
+  .session-duration.is-live { color: var(--live); font-weight: 700; }
+  .session-unassigned-tag {
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-faint); border: 1px solid var(--outline); border-radius: var(--radius-pill); padding: 2px 8px;
+  }
+  #linkEventMenu { max-height: 260px; overflow-y: auto; }
+  .session-actions { border-top: 1px solid var(--card-hairline); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
   .session-tracks { border-top: 1px solid var(--card-hairline); padding-top: 4px; display: flex; flex-direction: column; }
   .session-track { display: flex; gap: 12px; padding: 9px 0; align-items: baseline; }
   .session-track-num { font-family: var(--font-mono); color: var(--accent); font-size: 11px; width: 18px; flex-shrink: 0; }
@@ -253,27 +309,45 @@
         <div class="brand-mark"><div class="brand-mark-inner"><div class="brand-mark-dot"></div></div></div>
         <div class="brand-word"><span class="brand-word-text">Earshot</span><span class="brand-period"></span></div>
       </div>
-      <div class="live-tag" id="liveTag" hidden><span class="live-tag-dot"></span>Live</div>
+      <div class="profile-menu-wrap">
+        <button class="profile-btn" id="profileBtn" type="button" aria-label="Profile menu">
+          <svg id="profileBtnIcon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.5c-3.3 0-9.8 1.6-9.8 4.9v2.4h19.6v-2.4c0-3.3-6.5-4.9-9.8-4.9z"/></svg>
+          <span id="profileBtnInitial" hidden></span>
+        </button>
+        <div class="profile-menu" id="profileMenu" hidden>
+          <button type="button" data-profile-action="profile"><span class="pill-dot"></span>My profile</button>
+          <button type="button" data-profile-action="account"><span class="pill-dot"></span>Account</button>
+          <button type="button" data-profile-action="settings"><span class="pill-dot"></span>Settings</button>
+          <button type="button" data-profile-action="help"><span class="pill-dot"></span>Help</button>
+        </div>
+      </div>
     </div>
 
     <nav class="tabs">
       <button class="tab-btn active" data-tab="home"><span class="pill-dot"></span>Home</button>
+      <button class="tab-btn" data-tab="events"><span class="pill-dot"></span>Events</button>
       <button class="tab-btn" data-tab="history"><span class="pill-dot"></span>History</button>
-      <button class="tab-btn" data-tab="settings"><span class="pill-dot"></span>Settings</button>
     </nav>
   </div>
 
   <section class="tab-panel content-block" id="tab-home">
     <div class="live-session-line" id="liveSessionLine" hidden>
-      <span class="live-session-dot"></span><span id="liveSessionText"></span>
+      <div class="live-tag" id="liveTag"><span class="live-tag-dot"></span>Live</div>
+      <span id="liveSessionText"></span>
     </div>
     <div class="idle-empty" id="idleArea">
       <div class="idle-heading" id="idleHeading">Nothing yet</div>
-      <div class="idle-sub" id="idleSub">Checking your calendars…</div>
+      <div class="idle-sub" id="idleSub">Auto-listen is armed. It'll start the moment a tracked event begins.</div>
     </div>
     <div class="next-up" id="nextUp" hidden>
       <span class="next-up-label" id="nextUpLabel"></span>
       <span class="next-up-value" id="nextUpValue"></span>
+    </div>
+
+    <div class="event-picker" id="eventPicker" hidden>
+      <div class="idle-heading">Multiple events found</div>
+      <div class="idle-sub">Which one is this session for?</div>
+      <div id="eventPickerList"></div>
     </div>
 
     <div class="col-header" id="colHeader" hidden>
@@ -291,8 +365,23 @@
 
     <div class="settings-section">
       <div class="section-label">Upcoming events</div>
-      <div class="small-note">Tracked events count as a class automatically — by keyword, or a location that looks like a gym or studio. Check an untracked event to include it anyway.</div>
-      <div id="eventsList"></div>
+      <div class="small-note">See what's tracked and what's not in <a href="#" id="goToEventsLink">Events</a>.</div>
+    </div>
+  </section>
+
+  <section class="tab-panel content-block" id="tab-events" hidden>
+    <h1 class="screen-title">Events</h1>
+    <div class="small-note">Tracked events trigger auto-listening — by keyword anywhere in the title, location, or description, or by a location that looks like a gym or studio. Check an untracked event to include it anyway.</div>
+    <input type="text" id="eventsSearch" placeholder="Search events…" />
+    <div id="eventsList"></div>
+    <button class="link-btn" id="addEventToggle" type="button">+ Add event</button>
+    <div class="add-event-form" id="addEventForm" hidden>
+      <input type="text" id="manualEventTitle" placeholder="Event title" />
+      <input type="datetime-local" id="manualEventStart" />
+      <input type="datetime-local" id="manualEventEnd" />
+      <div class="actions-row">
+        <button class="link-btn" id="manualEventSubmit" type="button">Add</button>
+      </div>
     </div>
   </section>
 
@@ -301,29 +390,34 @@
     <div class="history-toolbar">
       <input type="text" id="historySearch" class="history-search" placeholder="Search sessions or songs…" />
       <div class="history-filters">
-        <div class="select-wrap">
-          <select id="historyFilter" aria-label="Filter by calendar">
-            <option value="all">All calendars</option>
-            <option value="google">Google</option>
-            <option value="microsoft">Outlook</option>
-            <option value="apple">iCloud</option>
-            <option value="manual">Manual</option>
-          </select>
-          <span class="select-caret">&#9662;</span>
+        <div class="dropdown-wrap">
+          <button type="button" class="dropdown-btn" id="historyFilterBtn" aria-haspopup="true" aria-expanded="false">
+            <span id="historyFilterLabel">All calendars</span><span class="select-caret"></span>
+          </button>
+          <div class="profile-menu" id="historyFilterMenu" hidden>
+            <button type="button" data-value="all"><span class="pill-dot"></span>All calendars</button>
+            <button type="button" data-value="google"><span class="pill-dot"></span>Google</button>
+            <button type="button" data-value="microsoft"><span class="pill-dot"></span>Outlook</button>
+            <button type="button" data-value="apple"><span class="pill-dot"></span>iCloud</button>
+            <button type="button" data-value="manual"><span class="pill-dot"></span>Manual</button>
+          </div>
         </div>
-        <div class="select-wrap">
-          <select id="historySort" aria-label="Sort sessions">
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-            <option value="most">Most tracks</option>
-            <option value="fewest">Fewest tracks</option>
-          </select>
-          <span class="select-caret">&#9662;</span>
+        <div class="dropdown-wrap">
+          <button type="button" class="dropdown-btn" id="historySortBtn" aria-haspopup="true" aria-expanded="false">
+            <span id="historySortLabel">Newest first</span><span class="select-caret"></span>
+          </button>
+          <div class="profile-menu" id="historySortMenu" hidden>
+            <button type="button" data-value="newest"><span class="pill-dot"></span>Newest first</button>
+            <button type="button" data-value="oldest"><span class="pill-dot"></span>Oldest first</button>
+            <button type="button" data-value="most"><span class="pill-dot"></span>Most tracks</button>
+            <button type="button" data-value="fewest"><span class="pill-dot"></span>Fewest tracks</button>
+          </div>
         </div>
       </div>
     </div>
     <div id="historyList"></div>
     <div class="empty" id="historyEmpty">No past sessions yet.</div>
+    <div class="profile-menu" id="linkEventMenu" hidden style="position: fixed; right: auto;"></div>
   </section>
 
   <section class="tab-panel content-block" id="tab-settings" hidden>
@@ -334,28 +428,31 @@
         <div class="provider-block">
           <div class="row">
             <span class="provider-name"><span class="provider-dot" id="dot-google"></span>Google Calendar</span>
-            <span id="chip-google" class="chip off">Not connected</span>
+            <div class="row-right">
+              <span id="chip-google" class="chip off" hidden>Connected</span>
+              <div class="row-action" id="row-google-action"></div>
+            </div>
           </div>
-          <div class="row-action" id="row-google-action"></div>
-        </div>
-        <div class="provider-block">
-          <div class="row">
-            <span class="provider-name"><span class="provider-dot" id="dot-microsoft"></span>Outlook Calendar</span>
-            <span id="chip-microsoft" class="chip off">Not connected</span>
-          </div>
-          <div class="row-action" id="row-microsoft-action"></div>
         </div>
         <div class="provider-block">
           <div class="row">
             <span class="provider-name"><span class="provider-dot" id="dot-apple"></span>iCloud Calendar</span>
-            <span id="chip-apple" class="chip off">Not connected</span>
+            <div class="row-right">
+              <span id="chip-apple" class="chip off" hidden>Connected</span>
+              <div class="row-action" id="row-apple-action"></div>
+            </div>
           </div>
-          <div class="row-action" id="row-apple-action"></div>
           <div class="apple-form" id="appleForm">
             <input type="email" id="appleEmail" placeholder="Apple ID email" />
             <input type="password" id="applePassword" placeholder="App-specific password" />
             <div class="small-note">Generate one at appleid.apple.com — your regular Apple ID password won't work here.</div>
             <button class="link-btn" id="appleSubmit">Connect</button>
+          </div>
+        </div>
+        <div class="provider-block">
+          <div class="row">
+            <span class="provider-name"><span class="provider-dot" id="dot-microsoft"></span>Outlook Calendar</span>
+            <span id="chip-microsoft" class="chip off">Coming soon</span>
           </div>
         </div>
       </div>
@@ -365,21 +462,29 @@
         <div class="provider-block">
           <div class="row">
             <span class="provider-name"><span class="provider-dot" id="dot-spotify"></span>Spotify</span>
-            <span id="chip-spotify" class="chip off">Not connected</span>
+            <div class="row-right">
+              <span id="chip-spotify" class="chip off" hidden>Connected</span>
+              <div class="row-action" id="row-spotify-action"></div>
+            </div>
           </div>
-          <div class="row-action" id="row-spotify-action"></div>
+        </div>
+        <div class="provider-block">
+          <div class="row">
+            <span class="provider-name">Apple Music</span>
+            <span class="chip off">Coming soon</span>
+          </div>
         </div>
         <div class="small-note">Connect Spotify to turn any session's tracklist into a real playlist from its History card.</div>
       </div>
 
       <div class="settings-section">
-        <div class="section-label">Class keywords</div>
+        <div class="section-label">Event keywords</div>
         <div class="tag-list" id="tagList"></div>
         <div class="tag-input-wrap">
           <input type="text" id="tagSearchInput" placeholder="Search or type your own…" autocomplete="off" />
           <div class="tag-suggestions" id="tagSuggestions" hidden></div>
         </div>
-        <div class="small-note">An event title matching any of these counts as a class — so will a location that looks like a gym or studio.</div>
+        <div class="small-note">An event title matching any of these will trigger auto-listening — so will a location that looks like a gym or studio.</div>
         <div class="actions-row">
           <button class="link-btn" id="saveKeywords">Save</button>
         </div>
@@ -388,11 +493,62 @@
       <div class="settings-section">
         <div class="section-label">Microphone</div>
         <div class="mic-card">
-          <span class="small-note">Auto-listen needs mic access granted once. The tab has to stay open and awake for the length of class.</span>
+          <span class="small-note">Auto-listen needs mic access granted once. The tab has to stay open and awake for the length of the event.</span>
           <button class="primary" id="enableMicBtn">Enable auto-listen</button>
         </div>
       </div>
+
     </div>
+  </section>
+
+  <section class="tab-panel content-block" id="tab-profile" hidden>
+    <h1 class="screen-title">My Profile</h1>
+    <div class="settings-sections">
+      <div class="settings-section">
+        <div class="section-label">Basic info</div>
+        <div class="provider-block">
+          <label class="small-note" for="profileFirstNameInput">First name</label>
+          <input type="text" id="profileFirstNameInput" placeholder="First name" style="margin-top: 6px;" />
+        </div>
+        <div class="provider-block">
+          <label class="small-note" for="profileLastNameInput">Last name</label>
+          <input type="text" id="profileLastNameInput" placeholder="Last name" style="margin-top: 6px;" />
+        </div>
+        <div class="actions-row">
+          <button class="link-btn" id="saveProfileBtn">Save</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-panel content-block" id="tab-account" hidden>
+    <h1 class="screen-title">Account</h1>
+    <div class="settings-sections">
+      <div class="settings-section">
+        <div class="mic-card">
+          <span class="small-note">Earshot v<span id="appVersion">0.1.0</span> — running locally, no login required.</span>
+        </div>
+        <div class="provider-block">
+          <div class="row">
+            <span class="provider-name">Export data</span>
+            <button class="link-btn" id="exportDataBtn">Download</button>
+          </div>
+          <div class="small-note" style="margin-top: 8px;">Includes your session history and event keywords. Calendar and Spotify credentials stay local and are never included.</div>
+        </div>
+        <div class="provider-block">
+          <div class="row">
+            <span class="provider-name">Clear history</span>
+            <button class="link-btn danger" id="clearHistoryBtn">Clear</button>
+          </div>
+          <div class="small-note" style="margin-top: 8px;">Permanently deletes all past sessions. Calendar connections and keywords are kept.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab-panel content-block" id="tab-help" hidden>
+    <h1 class="screen-title">Help</h1>
+    <div class="small-note">FAQs and guides are coming soon — check back once things are more baked.</div>
   </section>
 </div>
 
@@ -409,7 +565,6 @@
   const exportBtn = document.getElementById('exportBtn');
   const timerEl = document.getElementById('timer');
   const colHeader = document.getElementById('colHeader');
-  const liveTag = document.getElementById('liveTag');
   const liveSessionLine = document.getElementById('liveSessionLine');
   const liveSessionText = document.getElementById('liveSessionText');
   const idleArea = document.getElementById('idleArea');
@@ -418,6 +573,9 @@
   const nextUp = document.getElementById('nextUp');
   const nextUpLabel = document.getElementById('nextUpLabel');
   const nextUpValue = document.getElementById('nextUpValue');
+  const eventPicker = document.getElementById('eventPicker');
+  const eventPickerList = document.getElementById('eventPickerList');
+  let pickerCandidates = [];
   const tagList = document.getElementById('tagList');
   const tagSearchInput = document.getElementById('tagSearchInput');
   const tagSuggestions = document.getElementById('tagSuggestions');
@@ -441,8 +599,12 @@
   const tabButtons = document.querySelectorAll('.tab-btn');
   const tabPanels = {
     home: document.getElementById('tab-home'),
+    events: document.getElementById('tab-events'),
     history: document.getElementById('tab-history'),
     settings: document.getElementById('tab-settings'),
+    profile: document.getElementById('tab-profile'),
+    account: document.getElementById('tab-account'),
+    help: document.getElementById('tab-help'),
   };
 
   function switchTab(name) {
@@ -458,16 +620,15 @@
   // ---- live tag / idle block ----
 
   function showLive(sessionLabel) {
-    liveTag.hidden = false;
     liveSessionLine.hidden = false;
     liveSessionText.textContent = sessionLabel;
     idleArea.hidden = true;
     nextUp.hidden = true;
+    eventPicker.hidden = true;
     colHeader.hidden = false;
   }
 
   function showIdleMessage(text, isError) {
-    liveTag.hidden = true;
     liveSessionLine.hidden = true;
     colHeader.hidden = true;
     idleArea.hidden = false;
@@ -475,17 +636,18 @@
     idleSub.textContent = text;
     idleSub.classList.toggle('is-error', !!isError);
     nextUp.hidden = true;
+    eventPicker.hidden = true;
   }
 
   function showIdleNext(event) {
-    liveTag.hidden = true;
     liveSessionLine.hidden = true;
     colHeader.hidden = true;
     idleArea.hidden = false;
     idleHeading.textContent = 'Nothing yet';
-    idleSub.textContent = "Auto-listen is on. It'll start on its own when a class begins.";
+    idleSub.textContent = "Auto-listen is armed. It'll start the moment a tracked event begins.";
     idleSub.classList.remove('is-error');
     nextUp.hidden = false;
+    eventPicker.hidden = true;
     nextUpLabel.textContent = `Next up · ${event.source || ''}`;
     const when = new Date(event.start);
     const now = new Date();
@@ -497,6 +659,29 @@
     else dayLabel = when.toLocaleDateString(undefined, { weekday: 'long' });
     const timeLabel = when.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
     nextUpValue.textContent = `${event.title} · ${dayLabel}, ${timeLabel}`;
+  }
+
+  function showEventPicker(candidates) {
+    pickerCandidates = candidates;
+    liveSessionLine.hidden = true;
+    colHeader.hidden = true;
+    idleArea.hidden = true;
+    nextUp.hidden = true;
+    eventPicker.hidden = false;
+    eventPickerList.innerHTML = candidates.map((e, i) => `
+      <button type="button" class="event-picker-option" data-idx="${i}">
+        <div class="event-title">${escapeHtml(e.title)}</div>
+        <div class="event-time">${fmtEventTime(e.start, e.end)} · ${e.source}${e.location ? ' · ' + escapeHtml(e.location) : ''}</div>
+      </button>
+    `).join('');
+    eventPickerList.querySelectorAll('.event-picker-option').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const chosen = pickerCandidates[Number(btn.dataset.idx)];
+        pickerCandidates = [];
+        eventPicker.hidden = true;
+        start(true, chosen);
+      });
+    });
   }
 
   function setStatus(text, mode) {
@@ -580,7 +765,7 @@
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
-      setStatus(auto ? 'Class detected, but mic access isn\'t enabled — tap "Enable auto-listen" in Settings.' : 'Microphone permission is needed to listen for songs.', 'error');
+      setStatus(auto ? 'Event detected, but mic access isn\'t enabled — tap "Enable auto-listen" in Settings.' : 'Microphone permission is needed to listen for songs.', 'error');
       return;
     }
     running = true;
@@ -686,6 +871,68 @@
     }
   });
 
+  // ---- profile ----
+
+  const profileBtnIcon = document.getElementById('profileBtnIcon');
+  const profileBtnInitial = document.getElementById('profileBtnInitial');
+  const profileFirstNameInput = document.getElementById('profileFirstNameInput');
+  const profileLastNameInput = document.getElementById('profileLastNameInput');
+
+  function updateProfileAvatar(firstName) {
+    const initial = (firstName || '').trim().charAt(0).toUpperCase();
+    profileBtn.classList.toggle('has-name', !!initial);
+    profileBtnIcon.style.display = initial ? 'none' : '';
+    profileBtnInitial.hidden = !initial;
+    profileBtnInitial.textContent = initial;
+  }
+
+  async function loadProfile() {
+    const res = await fetch('/api/profile');
+    const profile = await res.json();
+    profileFirstNameInput.value = profile.firstName || '';
+    profileLastNameInput.value = profile.lastName || '';
+    updateProfileAvatar(profile.firstName);
+  }
+
+  document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+    const res = await fetch('/api/profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firstName: profileFirstNameInput.value, lastName: profileLastNameInput.value }),
+    });
+    const profile = await res.json();
+    updateProfileAvatar(profile.firstName);
+  });
+
+  // ---- account ----
+
+  document.getElementById('exportDataBtn').addEventListener('click', async () => {
+    const [sessionsRes, statusRes] = await Promise.all([
+      fetch('/api/sessions?limit=1000'),
+      fetch('/api/calendars/status'),
+    ]);
+    const sessions = await sessionsRes.json();
+    const status = await statusRes.json();
+    const exportData = {
+      exportedAt: new Date().toISOString(),
+      keywords: status.keywords || [],
+      sessions,
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'earshot-data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('clearHistoryBtn').addEventListener('click', async () => {
+    if (!confirm("Delete all session history? This can't be undone.")) return;
+    await fetch('/api/sessions', { method: 'DELETE' });
+    loadHistory();
+  });
+
   // ---- calendar status polling / auto-start ----
 
   async function pollClassStatus() {
@@ -693,15 +940,18 @@
       const res = await fetch('/api/class-status');
       const data = await res.json();
       if (data.inClass) {
-        if (!running) {
+        if (data.candidates && data.candidates.length > 1) {
+          if (!running && eventPicker.hidden) showEventPicker(data.candidates);
+        } else if (!running) {
+          if (!eventPicker.hidden) eventPicker.hidden = true;
           await start(true, data.event);
         }
       } else if (autoStarted && running) {
         stop();
-        setStatus('Class ended — stopped listening.', null);
+        setStatus('Event ended — stopped listening.', null);
       } else if (!running) {
         if (data.event) showIdleNext(data.event);
-        else showIdleMessage("Auto-listen is on. It'll start on its own when a class begins.");
+        else showIdleMessage("Auto-listen is armed. It'll start the moment a tracked event begins.");
       }
     } catch (e) {
       // leave whatever status is currently shown
@@ -725,11 +975,12 @@
     const res = await fetch('/api/calendars/status');
     const data = await res.json();
 
-    ['google', 'microsoft', 'apple'].forEach((p) => {
+    ['google', 'apple'].forEach((p) => {
       const chip = document.getElementById(`chip-${p}`);
-      chip.textContent = data[p] ? 'Connected' : 'Not connected';
-      chip.classList.toggle('connected', !!data[p]);
-      chip.classList.toggle('off', !data[p]);
+      chip.hidden = !data[p];
+      chip.textContent = 'Connected';
+      chip.classList.add('connected');
+      chip.classList.remove('off');
       document.getElementById(`dot-${p}`).classList.toggle('connected', !!data[p]);
       document.getElementById(`row-${p}-action`).innerHTML = providerActionHTML(p, data[p]);
     });
@@ -762,9 +1013,10 @@
     spotifyConnected = !!data.connected;
 
     const chip = document.getElementById('chip-spotify');
-    chip.textContent = spotifyConnected ? 'Connected' : 'Not connected';
-    chip.classList.toggle('connected', spotifyConnected);
-    chip.classList.toggle('off', !spotifyConnected);
+    chip.hidden = !spotifyConnected;
+    chip.textContent = 'Connected';
+    chip.classList.add('connected');
+    chip.classList.remove('off');
     document.getElementById('dot-spotify').classList.toggle('connected', spotifyConnected);
     document.getElementById('row-spotify-action').innerHTML = spotifyConnected
       ? '<button class="link-btn danger" id="spotifyDisconnect">Disconnect</button>'
@@ -905,41 +1157,71 @@
     return `${dateStr}, ${timeStr}–${endStr}`;
   }
 
+  let allEvents = [];
+
   async function loadEvents() {
     const container = document.getElementById('eventsList');
     container.innerHTML = '<div class="events-empty">Loading…</div>';
     try {
       const res = await fetch('/api/calendars/events?days=7');
-      const evts = await res.json();
-      if (!evts.length) {
-        container.innerHTML = '<div class="events-empty">No upcoming events found. Connect a calendar in <a href="#" id="goToSettingsLink">Settings</a> first.</div>';
-        document.getElementById('goToSettingsLink').addEventListener('click', (e) => {
-          e.preventDefault();
-          switchTab('settings');
-        });
-        return;
-      }
-      const tracked = evts.filter((e) => e.autoMatch || e.selected);
-      const untracked = evts.filter((e) => !(e.autoMatch || e.selected));
-
-      let html = '';
-      if (tracked.length) {
-        html += `<div class="event-group-label">Tracked (${tracked.length})</div>`;
-        html += tracked.map(eventRowHTML).join('');
-      }
-      if (untracked.length) {
-        html += `<div class="event-group-label">Untracked (${untracked.length})</div>`;
-        html += untracked.map(eventRowHTML).join('');
-      }
-      container.innerHTML = html;
-
-      container.querySelectorAll('input[type=checkbox]:not([disabled])').forEach((cb) => {
-        cb.addEventListener('change', saveSelectedEvents);
-      });
+      allEvents = await res.json();
+      await renderEventsList();
     } catch (e) {
       container.innerHTML = '<div class="events-empty">Couldn\'t load events.</div>';
     }
   }
+
+  async function renderEventsList() {
+    const container = document.getElementById('eventsList');
+    const query = document.getElementById('eventsSearch').value.trim().toLowerCase();
+    const evts = query
+      ? allEvents.filter((e) =>
+          e.title.toLowerCase().includes(query) ||
+          (e.location || '').toLowerCase().includes(query) ||
+          (e.description || '').toLowerCase().includes(query))
+      : allEvents;
+
+    if (!evts.length) {
+      if (!allEvents.length) {
+        const statusRes = await fetch('/api/calendars/status');
+        const status = await statusRes.json();
+        const anyConnected = !!(status.google || status.apple);
+        container.innerHTML = anyConnected
+          ? '<div class="events-empty">No upcoming events in the next 7 days.</div>'
+          : '<div class="events-empty">No upcoming events found. Connect a calendar in <a href="#" id="goToSettingsLink">Settings</a> first.</div>';
+        const settingsLink = document.getElementById('goToSettingsLink');
+        if (settingsLink) {
+          settingsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchTab('settings');
+          });
+        }
+      } else {
+        container.innerHTML = '<div class="events-empty">No events match your search.</div>';
+      }
+      return;
+    }
+
+    const tracked = evts.filter((e) => e.autoMatch || e.selected);
+    const untracked = evts.filter((e) => !(e.autoMatch || e.selected));
+
+    let html = '';
+    if (tracked.length) {
+      html += `<div class="event-group-label">Tracked (${tracked.length})</div>`;
+      html += tracked.map(eventRowHTML).join('');
+    }
+    if (untracked.length) {
+      html += `<div class="event-group-label">Untracked (${untracked.length})</div>`;
+      html += untracked.map(eventRowHTML).join('');
+    }
+    container.innerHTML = html;
+
+    container.querySelectorAll('input[type=checkbox]:not([disabled])').forEach((cb) => {
+      cb.addEventListener('change', saveSelectedEvents);
+    });
+  }
+
+  document.getElementById('eventsSearch').addEventListener('input', renderEventsList);
 
   function eventRowHTML(e) {
     const key = `${e.source}:${e.id}`;
@@ -948,7 +1230,7 @@
     return `
       <div class="event-row">
         <input type="checkbox" data-key="${key}" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} />
-        <div>
+        <div style="flex:1; min-width:0;">
           <div class="event-title">${escapeHtml(e.title)}</div>
           <div class="event-time">${fmtEventTime(e.start, e.end)} · ${e.source}${e.location ? ' · ' + escapeHtml(e.location) : ''}</div>
         </div>
@@ -966,12 +1248,52 @@
     });
   }
 
+  // ---- manually adding an event ----
+
+  const addEventForm = document.getElementById('addEventForm');
+  document.getElementById('addEventToggle').addEventListener('click', () => {
+    addEventForm.hidden = !addEventForm.hidden;
+  });
+
+  document.getElementById('manualEventSubmit').addEventListener('click', async () => {
+    const titleInput = document.getElementById('manualEventTitle');
+    const startInput = document.getElementById('manualEventStart');
+    const endInput = document.getElementById('manualEventEnd');
+    if (!startInput.value || !endInput.value) return;
+    const start = new Date(startInput.value);
+    const end = new Date(endInput.value);
+    if (end <= start) {
+      alert('End time has to be after the start time.');
+      return;
+    }
+    await fetch('/api/calendars/manual-events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        title: titleInput.value.trim() || 'Untitled event',
+        start: start.toISOString(),
+        end: end.toISOString(),
+      }),
+    });
+    titleInput.value = '';
+    startInput.value = '';
+    endInput.value = '';
+    addEventForm.hidden = true;
+    loadEvents();
+  });
+
   // ---- history ----
 
   const historyList = document.getElementById('historyList');
   const historyEmpty = document.getElementById('historyEmpty');
-  const historyFilterEl = document.getElementById('historyFilter');
-  const historySortEl = document.getElementById('historySort');
+  const historyFilterBtn = document.getElementById('historyFilterBtn');
+  const historyFilterMenu = document.getElementById('historyFilterMenu');
+  const historyFilterLabel = document.getElementById('historyFilterLabel');
+  const historySortBtn = document.getElementById('historySortBtn');
+  const historySortMenu = document.getElementById('historySortMenu');
+  const historySortLabel = document.getElementById('historySortLabel');
+  let historyFilterValue = 'all';
+  let historySortValue = 'newest';
   const historySearchEl = document.getElementById('historySearch');
   let allSessions = [];
 
@@ -980,6 +1302,14 @@
     const dateStr = started.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
     const timeStr = started.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
     return `${dateStr} · ${timeStr}`;
+  }
+
+  function fmtSessionDuration(session) {
+    if (!session.endedAt) return 'Live';
+    const mins = Math.max(1, Math.round((new Date(session.endedAt) - new Date(session.startedAt)) / 60000));
+    if (mins < 60) return `${mins} min`;
+    const h = Math.floor(mins / 60), m = mins % 60;
+    return m ? `${h}h ${m}m` : `${h}h`;
   }
 
   function renderHistoryList(sessions, query) {
@@ -996,12 +1326,21 @@
         t.title.toLowerCase().includes(query) || t.artist.toLowerCase().includes(query));
 
       const spotifyTrackUrls = s.tracks.filter((t) => t.spotifyUrl).map((t) => t.spotifyUrl);
-      let actionsHTML = '';
+      const isUnassigned = !s.eventId;
+      const actionsDisplay = trackMatch ? 'flex' : 'none';
+      const actionRows = [];
       if (spotifyTrackUrls.length) {
-        actionsHTML = spotifyConnected
-          ? `<div class="session-actions"><button class="link-btn" data-playlist-session="${s.id}">Create Spotify playlist</button></div>`
-          : `<div class="session-actions"><span class="small-note">Connect Spotify in <a href="#" class="connect-spotify-link">Settings</a> to create a playlist from these songs.</span></div>`;
+        actionRows.push(spotifyConnected
+          ? `<button class="link-btn" data-playlist-session="${s.id}">Create Spotify playlist</button>`
+          : `<span class="small-note">Connect Spotify in <a href="#" class="connect-spotify-link">Settings</a> to create a playlist from these songs.</span>`);
       }
+      actionRows.push(`<button class="link-btn" data-link-event-session="${s.id}">${isUnassigned ? 'Link to event' : 'Change event'}</button>`);
+      if (!isUnassigned) {
+        actionRows.push(`<button class="link-btn danger" data-unlink-session="${s.id}">Unlink event</button>`);
+      }
+      const actionsHTML = actionRows.length
+        ? `<div class="session-actions" style="display:${actionsDisplay};">${actionRows.join('')}</div>`
+        : '';
 
       const count = s.tracks.length;
       const countLabel = `${count} track${count === 1 ? '' : 's'}`;
@@ -1012,14 +1351,15 @@
           <div class="session-head${trackMatch ? ' open' : ''}" data-idx="${i}" role="button" tabindex="0">
             <div class="session-title">
               <span class="session-title-text">${escapeHtml(s.eventTitle)}</span>
+              ${isUnassigned ? '<span class="session-unassigned-tag">Unassigned</span>' : ''}
               <button class="session-edit-btn" type="button" data-edit-session="${s.id}" aria-label="Rename session">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
               </button>
             </div>
             <span class="session-count${count === 0 ? ' zero' : ''}">${countLabel}</span>
-            <span class="session-caret">&#9662;</span>
+            <span class="session-caret"></span>
           </div>
-          <div class="session-meta">${fmtSessionDate(s)}</div>
+          <div class="session-meta">${fmtSessionDate(s)} · <span class="session-duration${s.endedAt ? '' : ' is-live'}">${fmtSessionDuration(s)}</span></div>
         </div>
         ${actionsHTML}
         <div class="session-tracks" style="display:${trackMatch ? 'flex' : 'none'};">
@@ -1036,9 +1376,12 @@
 
     historyList.querySelectorAll('.session-head').forEach((head) => {
       const toggle = () => {
-        const body = head.closest('.session-card').querySelector('.session-tracks');
+        const card = head.closest('.session-card');
+        const body = card.querySelector('.session-tracks');
+        const actions = card.querySelector('.session-actions');
         const opening = body.style.display === 'none';
         body.style.display = opening ? 'flex' : 'none';
+        if (actions) actions.style.display = opening ? 'flex' : 'none';
         head.classList.toggle('open', opening);
       };
       head.addEventListener('click', (e) => {
@@ -1074,6 +1417,70 @@
         switchTab('settings');
       });
     });
+
+    historyList.querySelectorAll('[data-link-event-session]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showLinkEventMenu(btn, btn.dataset.linkEventSession);
+      });
+    });
+
+    historyList.querySelectorAll('[data-unlink-session]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        await fetch(`/api/sessions/${btn.dataset.unlinkSession}/link-event`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}),
+        });
+        loadHistory();
+      });
+    });
+  }
+
+  async function getLinkableEvents() {
+    const res = await fetch('/api/calendars/events?days=14');
+    return res.json();
+  }
+
+  const linkEventMenu = document.getElementById('linkEventMenu');
+
+  async function showLinkEventMenu(btn, sessionId) {
+    const events = await getLinkableEvents();
+    const rect = btn.getBoundingClientRect();
+    linkEventMenu.style.top = `${rect.bottom + 6}px`;
+    linkEventMenu.style.left = `${rect.left}px`;
+    linkEventMenu.innerHTML = [`<button type="button" data-create="1"><span class="pill-dot"></span>Create new event…</button>`]
+      .concat(events.map((e, i) => `<button type="button" data-idx="${i}"><span class="pill-dot"></span>${escapeHtml(e.title)}</button>`))
+      .join('');
+    linkEventMenu.hidden = false;
+    linkEventMenu.querySelector('[data-create]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      linkEventMenu.hidden = true;
+      startEventFromSession(allSessions.find((s) => s.id === sessionId));
+    });
+    linkEventMenu.querySelectorAll('button[data-idx]').forEach((opt) => {
+      opt.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const chosen = events[Number(opt.dataset.idx)];
+        linkEventMenu.hidden = true;
+        await fetch(`/api/sessions/${sessionId}/link-event`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ eventSource: chosen.source, eventId: chosen.id, eventTitle: chosen.title }),
+        });
+        loadHistory();
+      });
+    });
+  }
+
+  function startEventFromSession(session) {
+    switchTab('events');
+    addEventForm.hidden = false;
+    document.getElementById('manualEventTitle').value = session.eventTitle;
+    const startInput = document.getElementById('manualEventStart');
+    startInput.focus();
+    startInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function startEditingSessionTitle(session, titleEl) {
@@ -1112,12 +1519,13 @@
   }
 
   function applyHistoryView() {
-    const filter = historyFilterEl.value;
-    const sort = historySortEl.value;
+    const filter = historyFilterValue;
+    const sort = historySortValue;
     const query = historySearchEl.value.trim().toLowerCase();
 
     let sessions = allSessions.filter((s) => {
-      if (filter === 'manual' ? !!s.eventSource : filter !== 'all' && s.eventSource !== filter) return false;
+      const isManualSession = !s.eventSource || s.eventSource === 'manual';
+      if (filter === 'manual' ? !isManualSession : filter !== 'all' && s.eventSource !== filter) return false;
       if (!query) return true;
       const titleMatch = s.eventTitle.toLowerCase().includes(query);
       const trackMatch = s.tracks.some((t) =>
@@ -1135,8 +1543,25 @@
     renderHistoryList(sessions, query);
   }
 
-  historyFilterEl.addEventListener('change', applyHistoryView);
-  historySortEl.addEventListener('change', applyHistoryView);
+  function setupDropdown(btn, menu, label, onSelect) {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const opening = menu.hidden;
+      document.querySelectorAll('.profile-menu').forEach((m) => { if (m !== menu) m.hidden = true; });
+      menu.hidden = !opening;
+    });
+    menu.addEventListener('click', (e) => e.stopPropagation());
+    menu.querySelectorAll('button[data-value]').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        label.textContent = opt.textContent.trim();
+        menu.hidden = true;
+        onSelect(opt.dataset.value);
+      });
+    });
+  }
+
+  setupDropdown(historyFilterBtn, historyFilterMenu, historyFilterLabel, (v) => { historyFilterValue = v; applyHistoryView(); });
+  setupDropdown(historySortBtn, historySortMenu, historySortLabel, (v) => { historySortValue = v; applyHistoryView(); });
   historySearchEl.addEventListener('input', applyHistoryView);
 
   async function loadHistory() {
@@ -1151,9 +1576,38 @@
     }
   }
 
+  document.getElementById('goToEventsLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    switchTab('events');
+  });
+
+  // ---- profile menu ----
+
+  const profileBtn = document.getElementById('profileBtn');
+  const profileMenu = document.getElementById('profileMenu');
+
+  profileBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const opening = profileMenu.hidden;
+    document.querySelectorAll('.profile-menu').forEach((m) => { if (m !== profileMenu) m.hidden = true; });
+    profileMenu.hidden = !opening;
+  });
+  profileMenu.addEventListener('click', (e) => e.stopPropagation());
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.profile-menu').forEach((m) => { m.hidden = true; });
+  });
+
+  document.querySelectorAll('[data-profile-action]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      profileMenu.hidden = true;
+      switchTab(btn.dataset.profileAction);
+    });
+  });
+
   renderTracks();
   refreshCalendarStatus();
   refreshSpotifyStatus();
+  loadProfile();
   loadEvents();
   loadHistory();
   pollClassStatus();

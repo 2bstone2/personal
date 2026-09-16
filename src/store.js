@@ -23,6 +23,17 @@ function save(db) {
   fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
 }
 
+function getProfile() {
+  return load().profile || { firstName: "", lastName: "" };
+}
+
+function setProfile({ firstName, lastName }) {
+  const db = load();
+  db.profile = { firstName: (firstName || "").trim(), lastName: (lastName || "").trim() };
+  save(db);
+  return db.profile;
+}
+
 function getProvider(name) {
   return load()[name] || null;
 }
@@ -65,6 +76,36 @@ function setSelectedEvents(list) {
   return db.selectedEvents;
 }
 
+// ---- manual events ----
+
+function getManualEvents() {
+  const db = load();
+  return db.manualEvents || [];
+}
+
+function addManualEvent({ title, start, end }) {
+  const db = load();
+  if (!db.manualEvents) db.manualEvents = [];
+  if (!db.selectedEvents) db.selectedEvents = [];
+  const event = {
+    id: `manual-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    title: title || "Untitled event",
+    start,
+    end,
+  };
+  db.manualEvents.push(event);
+  db.selectedEvents.push(`manual:${event.id}`);
+  save(db);
+  return event;
+}
+
+function removeManualEvent(id) {
+  const db = load();
+  db.manualEvents = (db.manualEvents || []).filter((e) => e.id !== id);
+  db.selectedEvents = (db.selectedEvents || []).filter((key) => key !== `manual:${id}`);
+  save(db);
+}
+
 // ---- session history ----
 
 function createSession({ eventTitle, eventSource, eventId }) {
@@ -72,7 +113,7 @@ function createSession({ eventTitle, eventSource, eventId }) {
   if (!db.sessions) db.sessions = [];
   const title = eventTitle || "Manual session";
   const session = {
-    id: `session-${Date.now()}`,
+    id: `session-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     eventTitle: title,
     originalTitle: title,
     eventSource: eventSource || null,
@@ -106,6 +147,22 @@ function renameSession(id, eventTitle) {
   return session;
 }
 
+// Links (or, with no eventId, unlinks back to "unassigned") a session to an
+// event after the fact. Works on any session, not just ones started manually.
+function linkSessionToEvent(id, { eventTitle, eventSource, eventId }) {
+  const db = load();
+  const session = (db.sessions || []).find((s) => s.id === id);
+  if (!session) return null;
+  session.eventSource = eventSource || null;
+  session.eventId = eventId || null;
+  if (eventTitle) {
+    session.eventTitle = eventTitle;
+    session.originalTitle = eventTitle;
+  }
+  save(db);
+  return session;
+}
+
 function addTrackToSession(id, track) {
   const db = load();
   const session = (db.sessions || []).find((s) => s.id === id);
@@ -120,7 +177,15 @@ function listSessions(limit = 50) {
   return (db.sessions || []).slice(0, limit);
 }
 
+function clearSessions() {
+  const db = load();
+  db.sessions = [];
+  save(db);
+}
+
 module.exports = {
+  getProfile,
+  setProfile,
   getProvider,
   setProvider,
   clearProvider,
@@ -128,9 +193,14 @@ module.exports = {
   setKeywords,
   getSelectedEvents,
   setSelectedEvents,
+  getManualEvents,
+  addManualEvent,
+  removeManualEvent,
   createSession,
   endSession,
   renameSession,
+  linkSessionToEvent,
   addTrackToSession,
   listSessions,
+  clearSessions,
 };
