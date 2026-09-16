@@ -4,6 +4,7 @@ const google = require("../providers/google");
 const microsoft = require("../providers/microsoft");
 const apple = require("../providers/apple");
 const events = require("../events");
+const { oauthPage } = require("../oauthPage");
 
 const router = express.Router();
 
@@ -70,10 +71,10 @@ router.get("/auth/google/callback", async (req, res) => {
   try {
     const tokens = await google.exchangeCodeForTokens(req.query.code);
     store.setProvider("google", { refreshToken: tokens.refresh_token });
-    res.send("Google Calendar connected — you can close this tab.");
+    res.send(oauthPage({ message: "Google Calendar connected — you can close this tab." }));
   } catch (err) {
     console.error(err.response?.data || err.message);
-    res.status(500).send("Something went wrong connecting Google Calendar.");
+    res.status(500).send(oauthPage({ message: "Something went wrong connecting Google Calendar.", isError: true }));
   }
 });
 
@@ -83,10 +84,10 @@ router.get("/auth/microsoft/callback", async (req, res) => {
   try {
     const tokens = await microsoft.exchangeCodeForTokens(req.query.code);
     store.setProvider("microsoft", { refreshToken: tokens.refresh_token });
-    res.send("Outlook Calendar connected — you can close this tab.");
+    res.send(oauthPage({ message: "Outlook Calendar connected — you can close this tab." }));
   } catch (err) {
     console.error(err.response?.data || err.message);
-    res.status(500).send("Something went wrong connecting Outlook Calendar.");
+    res.status(500).send(oauthPage({ message: "Something went wrong connecting Outlook Calendar.", isError: true }));
   }
 });
 

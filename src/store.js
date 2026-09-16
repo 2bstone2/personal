@@ -183,6 +183,12 @@ function clearSessions() {
   save(db);
 }
 
+function removeSession(id) {
+  const db = load();
+  db.sessions = (db.sessions || []).filter((s) => s.id !== id);
+  save(db);
+}
+
 module.exports = {
   getProfile,
   setProfile,
@@ -203,4 +209,5 @@ module.exports = {
   addTrackToSession,
   listSessions,
   clearSessions,
+  removeSession,
 };

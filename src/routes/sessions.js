@@ -41,4 +41,9 @@ router.delete("/api/sessions", (req, res) => {
   res.json({ cleared: true });
 });
 
+router.delete("/api/sessions/:id", (req, res) => {
+  store.removeSession(req.params.id);
+  res.json({ removed: true });
+});
+
 module.exports = router;

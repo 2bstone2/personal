@@ -1,6 +1,7 @@
 const express = require("express");
 const store = require("../store");
 const spotify = require("../providers/spotify");
+const { oauthPage } = require("../oauthPage");
 
 const router = express.Router();
 
@@ -9,10 +10,10 @@ router.get("/auth/spotify/callback", async (req, res) => {
   try {
     const tokens = await spotify.exchangeCodeForTokens(req.query.code);
     store.setProvider("spotify", { refreshToken: tokens.refresh_token });
-    res.send("Spotify connected — you can close this tab.");
+    res.send(oauthPage({ message: "Spotify connected — you can close this tab." }));
   } catch (err) {
     console.error(err.response?.data || err.message);
-    res.status(500).send("Something went wrong connecting Spotify.");
+    res.status(500).send(oauthPage({ message: "Something went wrong connecting Spotify.", isError: true }));
   }
 });
 

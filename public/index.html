@@ -94,16 +94,25 @@
   }
   .profile-menu button:hover { background: var(--card); color: var(--live); }
   .profile-menu button:hover .pill-dot { display: inline-block; }
+  .profile-menu button.danger { color: var(--danger); }
+  .profile-menu button.danger:hover { background: var(--card); color: var(--danger); }
+  .profile-menu button.danger .pill-dot { background: var(--danger); }
 
   .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
   .tab-btn {
     background: var(--card); color: var(--text-muted); font-family: var(--font-body); font-size: 12px;
     font-weight: 700; padding: 7px 14px; border-radius: var(--radius-pill); border: none; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 7px;
+    display: inline-flex; align-items: center; gap: 0;
+    transition: background 120ms ease, color 120ms ease;
   }
   .tab-btn.active { background: var(--accent); color: var(--on-accent); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
   .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--live); flex-shrink: 0; display: none; }
-  .tab-btn.active .pill-dot { display: inline-block; }
+  .tab-btn .pill-dot {
+    display: inline-block; width: 0; margin-right: 0; overflow: hidden;
+    transition: width 120ms ease, margin-right 120ms ease;
+  }
+  .tab-btn.active .pill-dot, .tab-btn:hover .pill-dot { width: 6px; margin-right: 7px; }
   .tab-panel[hidden] { display: none; }
 
   /* live session line / idle block */
@@ -130,9 +139,29 @@
   .col-header { justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
   .col-header:not([hidden]) { display: flex; }
 
-  #list { display: flex; flex-direction: column; gap: 8px; }
-  .track { background: var(--card); border-radius: var(--radius-md); padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+  #list, #recentlyHeardList { display: flex; flex-direction: column; gap: 8px; }
+  .track { background: var(--card); border-radius: var(--radius-md); padding: 14px; display: flex; gap: 12px; align-items: center; }
   .track-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); width: 18px; flex-shrink: 0; }
+  .track-art { width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; background: var(--field-deep); }
+  .session-track-art { width: 28px; height: 28px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; background: var(--field-deep); }
+  .art-fallback {
+    width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--field-deep);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .art-fallback-mark {
+    width: 22px; height: 22px; border: 1.5px solid transparent; border-right-color: var(--accent);
+    border-top-color: var(--accent); border-radius: 50%; transform: rotate(45deg);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .art-fallback-mark-inner {
+    width: 13px; height: 13px; border: 2.5px solid transparent; border-right-color: var(--live);
+    border-top-color: var(--live); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+  .art-fallback-mark-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--live); transform: rotate(-45deg); }
+  .art-fallback.session-art-fallback { width: 28px; height: 28px; }
+  .session-art-fallback .art-fallback-mark { width: 15px; height: 15px; border-width: 1.2px; }
+  .session-art-fallback .art-fallback-mark-inner { width: 9px; height: 9px; border-width: 2px; }
+  .session-art-fallback .art-fallback-mark-dot { width: 3px; height: 3px; }
   .track-info { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
   .track-info .title { font-size: 15px; font-weight: 700; }
   .track-info .artist { font-size: 12px; color: var(--text-muted); }
@@ -156,18 +185,18 @@
   }
   button.primary:not([hidden]), button.start:not([hidden]), button.stop:not([hidden]),
   button.link-btn:not([hidden]), .export:not([hidden]) { display: inline-flex; }
-  button.primary, .export {
+  button.primary, .export, button.start {
     background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-pill);
     padding: 14px; font-size: 13px;
   }
   .export { flex: 1; }
   button.primary:hover, .export:hover { background: var(--accent-hover); }
-  button.start, button.stop, button.link-btn {
+  button.start { padding: 16px 24px; font-size: 14px; flex: 1; box-shadow: 0 6px 18px rgba(171, 223, 83, 0.22); }
+  button.stop, button.link-btn {
     background: none; border: 1px solid var(--outline); color: var(--text); border-radius: var(--radius-pill);
   }
-  button.start, button.stop { padding: 14px 20px; font-size: 13px; }
+  button.stop { padding: 16px 24px; font-size: 14px; flex: 1; }
   button.link-btn { padding: 6px 14px; font-size: 12px; }
-  button.start:hover { border-color: var(--accent); color: var(--accent); }
   button.stop:hover { border-color: var(--live); color: var(--live); }
   button.link-btn:hover { border-color: var(--accent); color: var(--accent); }
   button.link-btn.danger { border-color: var(--danger); color: var(--danger); }
@@ -181,7 +210,7 @@
   button:disabled::before { display: none; }
 
   .section-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--secondary); }
-  .settings-section { display: flex; flex-direction: column; gap: 10px; }
+  .settings-section:not([hidden]) { display: flex; flex-direction: column; gap: 10px; }
   .settings-sections { display: flex; flex-direction: column; gap: 22px; }
 
   .provider-block { background: var(--card); border-radius: var(--radius-md); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
@@ -213,7 +242,8 @@
 
   .history-toolbar { display: flex; flex-direction: column; gap: 10px; }
   .history-filters { display: flex; gap: 10px; }
-  .dropdown-wrap { position: relative; display: inline-flex; }
+  .dropdown-wrap { position: relative; }
+  .dropdown-wrap:not([hidden]) { display: inline-flex; }
   .dropdown-btn {
     display: inline-flex; align-items: center; gap: 8px;
     background: var(--card); color: var(--text); border: 1px solid var(--outline);
@@ -288,17 +318,20 @@
   .session-count.zero { color: var(--text-faint); }
   .session-meta { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
   .session-duration.is-live { color: var(--live); font-weight: 700; }
-  .session-unassigned-tag {
-    font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--text-faint); border: 1px solid var(--outline); border-radius: var(--radius-pill); padding: 2px 8px;
-  }
   #linkEventMenu { max-height: 260px; overflow-y: auto; }
   .session-actions { border-top: 1px solid var(--card-hairline); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
   .session-tracks { border-top: 1px solid var(--card-hairline); padding-top: 4px; display: flex; flex-direction: column; }
-  .session-track { display: flex; gap: 12px; padding: 9px 0; align-items: baseline; }
+  .session-track { display: flex; gap: 12px; padding: 9px 0; align-items: center; }
   .session-track-num { font-family: var(--font-mono); color: var(--accent); font-size: 11px; width: 18px; flex-shrink: 0; }
   .session-track .title { font-size: 13px; font-weight: 700; }
   .session-track .artist { font-size: 13px; font-weight: 400; color: var(--text-muted); }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(10, 8, 24, 0.6); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+  .modal-overlay[hidden] { display: none; }
+  .modal-card { background: var(--field); border: 1px solid var(--outline); border-radius: var(--radius-lg); padding: 24px; max-width: 320px; width: 100%; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+  .modal-title { font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: 18px; letter-spacing: -0.01em; text-transform: uppercase; margin-bottom: 10px; }
+  .modal-body { font-size: 13px; line-height: 1.55; color: var(--text-muted); margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 </style>
 </head>
 <body>
@@ -336,8 +369,8 @@
       <span id="liveSessionText"></span>
     </div>
     <div class="idle-empty" id="idleArea">
-      <div class="idle-heading" id="idleHeading">Nothing yet</div>
-      <div class="idle-sub" id="idleSub">Auto-listen is armed. It'll start the moment a tracked event begins.</div>
+      <div class="idle-heading" id="idleHeading">Waiting to listen…</div>
+      <div class="idle-sub" id="idleSub">Listening starts automatically once a tracked event begins — or hit Start a session to begin now.</div>
     </div>
     <div class="next-up" id="nextUp" hidden>
       <span class="next-up-label" id="nextUpLabel"></span>
@@ -350,6 +383,15 @@
       <div id="eventPickerList"></div>
     </div>
 
+    <div class="dropdown-wrap" id="trackSortWrap" hidden style="margin-bottom: 8px;">
+      <button type="button" class="dropdown-btn" id="trackSortBtn">
+        <span id="trackSortLabel">Newest first</span><span class="select-caret"></span>
+      </button>
+      <div class="profile-menu" id="trackSortMenu" hidden>
+        <button type="button" data-value="newest"><span class="pill-dot"></span>Newest first</button>
+        <button type="button" data-value="oldest"><span class="pill-dot"></span>Oldest first</button>
+      </div>
+    </div>
     <div class="col-header" id="colHeader" hidden>
       <span>NO.&nbsp;&nbsp;TRACK</span><span>TIME</span>
     </div>
@@ -358,12 +400,17 @@
 
     <div class="actions-row">
       <button class="export" id="exportBtn" style="display:none;">Copy list</button>
-      <button class="start" id="startStopBtn">Start manually</button>
+      <button class="start" id="startStopBtn">Start a session</button>
       <button class="link-btn" id="pauseBtn" hidden>Pause</button>
     </div>
     <div class="timer" id="timer" hidden>00:00</div>
 
-    <div class="settings-section">
+    <div class="settings-section" id="recentlyHeardSection" hidden>
+      <div class="section-label">Recently heard</div>
+      <div id="recentlyHeardList"></div>
+    </div>
+
+    <div class="settings-section" id="upcomingEventsHint">
       <div class="section-label">Upcoming events</div>
       <div class="small-note">See what's tracked and what's not in <a href="#" id="goToEventsLink">Events</a>.</div>
     </div>
@@ -427,18 +474,16 @@
         <div class="section-label">Calendars</div>
         <div class="provider-block">
           <div class="row">
-            <span class="provider-name"><span class="provider-dot" id="dot-google"></span>Google Calendar</span>
+            <span class="provider-name"><span class="provider-dot" id="dot-google"></span>Google Calendar<span id="chip-google" class="chip off" hidden>Connected</span></span>
             <div class="row-right">
-              <span id="chip-google" class="chip off" hidden>Connected</span>
               <div class="row-action" id="row-google-action"></div>
             </div>
           </div>
         </div>
         <div class="provider-block">
           <div class="row">
-            <span class="provider-name"><span class="provider-dot" id="dot-apple"></span>iCloud Calendar</span>
+            <span class="provider-name"><span class="provider-dot" id="dot-apple"></span>iCloud Calendar<span id="chip-apple" class="chip off" hidden>Connected</span></span>
             <div class="row-right">
-              <span id="chip-apple" class="chip off" hidden>Connected</span>
               <div class="row-action" id="row-apple-action"></div>
             </div>
           </div>
@@ -461,9 +506,8 @@
         <div class="section-label">Music</div>
         <div class="provider-block">
           <div class="row">
-            <span class="provider-name"><span class="provider-dot" id="dot-spotify"></span>Spotify</span>
+            <span class="provider-name"><span class="provider-dot" id="dot-spotify"></span>Spotify<span id="chip-spotify" class="chip off" hidden>Connected</span></span>
             <div class="row-right">
-              <span id="chip-spotify" class="chip off" hidden>Connected</span>
               <div class="row-action" id="row-spotify-action"></div>
             </div>
           </div>
@@ -552,8 +596,22 @@
   </section>
 </div>
 
+<div class="profile-menu" id="sessionMenu" hidden style="position: fixed; right: auto;"></div>
+
+<div class="modal-overlay" id="confirmModalOverlay" hidden>
+  <div class="modal-card">
+    <div class="modal-title" id="confirmModalTitle">Delete?</div>
+    <div class="modal-body" id="confirmModalBody">This can't be undone.</div>
+    <div class="modal-actions">
+      <button class="link-btn" id="confirmModalCancel">Cancel</button>
+      <button class="link-btn danger" id="confirmModalConfirm">Delete</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  const CAPTURE_INTERVAL_MS = 2 * 60 * 1000;
+  const CAPTURE_INTERVAL_MS = 60 * 1000;
+  const FIRST_CAPTURE_DELAY_MS = 5000;
   const CLIP_LENGTH_MS = 7000;
   const POLL_MS = 30 * 1000;
 
@@ -565,6 +623,11 @@
   const exportBtn = document.getElementById('exportBtn');
   const timerEl = document.getElementById('timer');
   const colHeader = document.getElementById('colHeader');
+  const trackSortWrap = document.getElementById('trackSortWrap');
+  const trackSortBtn = document.getElementById('trackSortBtn');
+  const trackSortMenu = document.getElementById('trackSortMenu');
+  const trackSortLabel = document.getElementById('trackSortLabel');
+  let trackSortOrder = 'newest';
   const liveSessionLine = document.getElementById('liveSessionLine');
   const liveSessionText = document.getElementById('liveSessionText');
   const idleArea = document.getElementById('idleArea');
@@ -575,6 +638,7 @@
   const nextUpValue = document.getElementById('nextUpValue');
   const eventPicker = document.getElementById('eventPicker');
   const eventPickerList = document.getElementById('eventPickerList');
+  const upcomingEventsHint = document.getElementById('upcomingEventsHint');
   let pickerCandidates = [];
   const tagList = document.getElementById('tagList');
   const tagSearchInput = document.getElementById('tagSearchInput');
@@ -608,9 +672,11 @@
   };
 
   function switchTab(name) {
+    if (!tabPanels[name]) return;
     tabButtons.forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
     Object.values(tabPanels).forEach((panel) => (panel.hidden = true));
     tabPanels[name].hidden = false;
+    try { localStorage.setItem('earshot_active_tab', name); } catch (e) {}
   }
 
   tabButtons.forEach((btn) => {
@@ -625,6 +691,7 @@
     idleArea.hidden = true;
     nextUp.hidden = true;
     eventPicker.hidden = true;
+    upcomingEventsHint.hidden = true;
     colHeader.hidden = false;
   }
 
@@ -632,22 +699,24 @@
     liveSessionLine.hidden = true;
     colHeader.hidden = true;
     idleArea.hidden = false;
-    idleHeading.textContent = 'Nothing yet';
+    idleHeading.textContent = isError ? 'Action needed' : 'Waiting to listen…';
     idleSub.textContent = text;
     idleSub.classList.toggle('is-error', !!isError);
     nextUp.hidden = true;
     eventPicker.hidden = true;
+    upcomingEventsHint.hidden = false;
   }
 
   function showIdleNext(event) {
     liveSessionLine.hidden = true;
     colHeader.hidden = true;
     idleArea.hidden = false;
-    idleHeading.textContent = 'Nothing yet';
-    idleSub.textContent = "Auto-listen is armed. It'll start the moment a tracked event begins.";
+    idleHeading.textContent = 'Waiting to listen…';
+    idleSub.textContent = "Listening starts automatically once a tracked event begins — or hit Start a session to begin now.";
     idleSub.classList.remove('is-error');
     nextUp.hidden = false;
     eventPicker.hidden = true;
+    upcomingEventsHint.hidden = true;
     nextUpLabel.textContent = `Next up · ${event.source || ''}`;
     const when = new Date(event.start);
     const now = new Date();
@@ -667,6 +736,7 @@
     colHeader.hidden = true;
     idleArea.hidden = true;
     nextUp.hidden = true;
+    upcomingEventsHint.hidden = true;
     eventPicker.hidden = false;
     eventPickerList.innerHTML = candidates.map((e, i) => `
       <button type="button" class="event-picker-option" data-idx="${i}">
@@ -692,16 +762,26 @@
 
   function renderTracks() {
     if (tracks.length === 0) {
-      emptyMsg.style.display = 'block';
+      // Only show "No songs caught yet" once a session is actually running —
+      // otherwise it just repeats the idle heading above ("Nothing yet").
+      emptyMsg.style.display = running ? 'block' : 'none';
       exportBtn.style.display = 'none';
+      trackSortWrap.hidden = true;
       listEl.innerHTML = '';
       return;
     }
     emptyMsg.style.display = 'none';
     exportBtn.style.display = 'inline-block';
-    listEl.innerHTML = tracks.map((t, i) => `
+    trackSortWrap.hidden = tracks.length < 2;
+    // tracks[] is newest-first (unshift on capture); track number must reflect
+    // recognition order regardless of which end the list is displayed from.
+    const ordered = trackSortOrder === 'oldest' ? tracks.slice().reverse() : tracks;
+    listEl.innerHTML = ordered.map((t, i) => {
+      const num = trackSortOrder === 'oldest' ? i + 1 : tracks.length - i;
+      return `
       <div class="track">
-        <span class="track-num">${String(i + 1).padStart(2, '0')}</span>
+        <span class="track-num">${String(num).padStart(2, '0')}</span>
+        ${trackArtHTML(t, 'track-art')}
         <div class="track-info">
           <div class="title">${escapeHtml(t.title)}</div>
           <div class="artist">${escapeHtml(t.artist)}</div>
@@ -709,7 +789,14 @@
         </div>
         <div class="track-time">${t.time}</div>
       </div>
-    `).join('');
+    `;
+    }).join('');
+  }
+
+  function trackArtHTML(t, sizeClass) {
+    if (t.artworkUrl) return `<img class="${sizeClass}" src="${t.artworkUrl}" alt="" loading="lazy" />`;
+    const fallbackClass = sizeClass === 'session-track-art' ? 'art-fallback session-art-fallback' : 'art-fallback';
+    return `<div class="${fallbackClass}"><div class="art-fallback-mark"><div class="art-fallback-mark-inner"><div class="art-fallback-mark-dot"></div></div></div></div>`;
   }
 
   function trackLinksHTML(t) {
@@ -754,6 +841,7 @@
           artist: data.artist,
           spotifyUrl: data.spotifyUrl,
           appleMusicUrl: data.appleMusicUrl,
+          artworkUrl: data.artworkUrl,
           time: new Date().toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' }),
         });
         renderTracks();
@@ -797,7 +885,7 @@
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
     showLive(auto ? (event?.title || 'Class') : 'Manual session');
-    captureAndSend();
+    setTimeout(captureAndSend, FIRST_CAPTURE_DELAY_MS);
     intervalId = setInterval(captureAndSend, CAPTURE_INTERVAL_MS);
   }
 
@@ -836,15 +924,56 @@
     timerEl.hidden = true;
     timerEl.textContent = '00:00';
     if (stream) { stream.getTracks().forEach((t) => t.stop()); stream = null; }
-    startStopBtn.textContent = 'Start manually';
+    startStopBtn.textContent = 'Start a session';
     startStopBtn.classList.remove('stop');
     startStopBtn.classList.add('start');
     pauseBtn.hidden = true;
     setStatus('Stopped.', null);
     if (currentSessionId) {
-      fetch(`/api/sessions/${currentSessionId}/end`, { method: 'POST' }).finally(loadHistory);
+      fetch(`/api/sessions/${currentSessionId}/end`, { method: 'POST' }).finally(() => {
+        loadHistory();
+        loadRecentlyHeard();
+      });
       currentSessionId = null;
     }
+  }
+
+  function fmtHeardAt(iso) {
+    const d = new Date(iso);
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    let dayLabel;
+    if (d.toDateString() === now.toDateString()) dayLabel = 'Today';
+    else if (d.toDateString() === yesterday.toDateString()) dayLabel = 'Yesterday';
+    else dayLabel = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    const timeLabel = d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    return `${dayLabel} · ${timeLabel}`;
+  }
+
+  async function loadRecentlyHeard() {
+    const section = document.getElementById('recentlyHeardSection');
+    const list = document.getElementById('recentlyHeardList');
+    try {
+      const res = await fetch('/api/sessions?limit=10');
+      const sessions = await res.json();
+      const recent = [];
+      sessions.forEach((s) => s.tracks.forEach((t) => recent.push({ ...t, sessionTitle: s.eventTitle, playedAt: t.playedAt || s.startedAt })));
+      recent.sort((a, b) => new Date(b.playedAt) - new Date(a.playedAt));
+      const top = recent.slice(0, 5);
+      if (!top.length) { section.hidden = true; return; }
+      section.hidden = false;
+      list.innerHTML = top.map((t) => `
+        <div class="track">
+          ${trackArtHTML(t, 'track-art')}
+          <div class="track-info">
+            <div class="title">${escapeHtml(t.title)}</div>
+            <div class="artist">${escapeHtml(t.artist)} · ${escapeHtml(t.sessionTitle)}</div>
+          </div>
+          <div class="track-time">${fmtHeardAt(t.playedAt)}</div>
+        </div>
+      `).join('');
+    } catch (e) { section.hidden = true; }
   }
 
   exportBtn.addEventListener('click', async () => {
@@ -951,7 +1080,7 @@
         setStatus('Event ended — stopped listening.', null);
       } else if (!running) {
         if (data.event) showIdleNext(data.event);
-        else showIdleMessage("Auto-listen is armed. It'll start the moment a tracked event begins.");
+        else showIdleMessage("Listening starts automatically once a tracked event begins — or hit Start a session to begin now.");
       }
     } catch (e) {
       // leave whatever status is currently shown
@@ -1326,17 +1455,13 @@
         t.title.toLowerCase().includes(query) || t.artist.toLowerCase().includes(query));
 
       const spotifyTrackUrls = s.tracks.filter((t) => t.spotifyUrl).map((t) => t.spotifyUrl);
-      const isUnassigned = !s.eventId;
+      const sourceLabel = s.eventSource === 'google' ? 'Google' : s.eventSource === 'apple' ? 'iCloud' : 'Manual';
       const actionsDisplay = trackMatch ? 'flex' : 'none';
       const actionRows = [];
       if (spotifyTrackUrls.length) {
         actionRows.push(spotifyConnected
           ? `<button class="link-btn" data-playlist-session="${s.id}">Create Spotify playlist</button>`
           : `<span class="small-note">Connect Spotify in <a href="#" class="connect-spotify-link">Settings</a> to create a playlist from these songs.</span>`);
-      }
-      actionRows.push(`<button class="link-btn" data-link-event-session="${s.id}">${isUnassigned ? 'Link to event' : 'Change event'}</button>`);
-      if (!isUnassigned) {
-        actionRows.push(`<button class="link-btn danger" data-unlink-session="${s.id}">Unlink event</button>`);
       }
       const actionsHTML = actionRows.length
         ? `<div class="session-actions" style="display:${actionsDisplay};">${actionRows.join('')}</div>`
@@ -1351,21 +1476,21 @@
           <div class="session-head${trackMatch ? ' open' : ''}" data-idx="${i}" role="button" tabindex="0">
             <div class="session-title">
               <span class="session-title-text">${escapeHtml(s.eventTitle)}</span>
-              ${isUnassigned ? '<span class="session-unassigned-tag">Unassigned</span>' : ''}
-              <button class="session-edit-btn" type="button" data-edit-session="${s.id}" aria-label="Rename session">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              <button class="session-edit-btn" type="button" data-session-menu="${s.id}" aria-label="Session options">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/></svg>
               </button>
             </div>
             <span class="session-count${count === 0 ? ' zero' : ''}">${countLabel}</span>
             <span class="session-caret"></span>
           </div>
-          <div class="session-meta">${fmtSessionDate(s)} · <span class="session-duration${s.endedAt ? '' : ' is-live'}">${fmtSessionDuration(s)}</span></div>
+          <div class="session-meta">${sourceLabel} · ${fmtSessionDate(s)} · <span class="session-duration${s.endedAt ? '' : ' is-live'}">${fmtSessionDuration(s)}</span></div>
         </div>
         ${actionsHTML}
         <div class="session-tracks" style="display:${trackMatch ? 'flex' : 'none'};">
           ${s.tracks.length ? s.tracks.map((t, j) => `
             <div class="session-track">
               <span class="session-track-num">${String(j + 1).padStart(2, '0')}</span>
+              ${trackArtHTML(t, 'session-track-art')}
               <span class="title">${escapeHtml(t.title)} <span class="artist">${escapeHtml(t.artist)}</span></span>
             </div>
           `).join('') : '<div class="events-empty">Nothing was recognized during this session.</div>'}
@@ -1385,7 +1510,7 @@
         head.classList.toggle('open', opening);
       };
       head.addEventListener('click', (e) => {
-        if (e.target.closest('[data-edit-session]')) return;
+        if (e.target.closest('[data-session-menu]')) return;
         toggle();
       });
       head.addEventListener('keydown', (e) => {
@@ -1393,12 +1518,10 @@
       });
     });
 
-    historyList.querySelectorAll('[data-edit-session]').forEach((btn) => {
+    historyList.querySelectorAll('[data-session-menu]').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const session = sessions.find((s) => s.id === btn.dataset.editSession);
-        const titleEl = btn.previousElementSibling;
-        startEditingSessionTitle(session, titleEl);
+        showSessionMenu(btn, btn.dataset.sessionMenu);
       });
     });
 
@@ -1418,24 +1541,6 @@
       });
     });
 
-    historyList.querySelectorAll('[data-link-event-session]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showLinkEventMenu(btn, btn.dataset.linkEventSession);
-      });
-    });
-
-    historyList.querySelectorAll('[data-unlink-session]').forEach((btn) => {
-      btn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        await fetch(`/api/sessions/${btn.dataset.unlinkSession}/link-event`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({}),
-        });
-        loadHistory();
-      });
-    });
   }
 
   async function getLinkableEvents() {
@@ -1447,17 +1552,21 @@
 
   async function showLinkEventMenu(btn, sessionId) {
     const events = await getLinkableEvents();
+    const session = allSessions.find((s) => s.id === sessionId);
     const rect = btn.getBoundingClientRect();
     linkEventMenu.style.top = `${rect.bottom + 6}px`;
     linkEventMenu.style.left = `${rect.left}px`;
-    linkEventMenu.innerHTML = [`<button type="button" data-create="1"><span class="pill-dot"></span>Create new event…</button>`]
-      .concat(events.map((e, i) => `<button type="button" data-idx="${i}"><span class="pill-dot"></span>${escapeHtml(e.title)}</button>`))
-      .join('');
+    const items = [`<button type="button" data-create="1"><span class="pill-dot"></span>Create new event…</button>`]
+      .concat(events.map((e, i) => `<button type="button" data-idx="${i}"><span class="pill-dot"></span>${escapeHtml(e.title)}</button>`));
+    if (session && session.eventId) {
+      items.push(`<button type="button" class="danger" data-unlink="1"><span class="pill-dot"></span>Unlink event</button>`);
+    }
+    linkEventMenu.innerHTML = items.join('');
     linkEventMenu.hidden = false;
     linkEventMenu.querySelector('[data-create]').addEventListener('click', (e) => {
       e.stopPropagation();
       linkEventMenu.hidden = true;
-      startEventFromSession(allSessions.find((s) => s.id === sessionId));
+      startEventFromSession(session);
     });
     linkEventMenu.querySelectorAll('button[data-idx]').forEach((opt) => {
       opt.addEventListener('click', async (e) => {
@@ -1472,7 +1581,88 @@
         loadHistory();
       });
     });
+    const unlinkBtn = linkEventMenu.querySelector('[data-unlink]');
+    if (unlinkBtn) {
+      unlinkBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        linkEventMenu.hidden = true;
+        await fetch(`/api/sessions/${sessionId}/link-event`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({}),
+        });
+        loadHistory();
+      });
+    }
   }
+
+  const sessionMenu = document.getElementById('sessionMenu');
+
+  function showSessionMenu(btn, sessionId) {
+    const session = allSessions.find((s) => s.id === sessionId);
+    const rect = btn.getBoundingClientRect();
+    sessionMenu.style.top = `${rect.bottom + 6}px`;
+    sessionMenu.style.left = `${rect.left}px`;
+    sessionMenu.innerHTML = `
+      <button type="button" data-action="rename"><span class="pill-dot"></span>Rename</button>
+      <button type="button" data-action="reassign"><span class="pill-dot"></span>Reassign</button>
+      <button type="button" class="danger" data-action="delete"><span class="pill-dot"></span>Delete</button>
+    `;
+    sessionMenu.hidden = false;
+
+    sessionMenu.querySelector('[data-action="rename"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      sessionMenu.hidden = true;
+      const titleEl = btn.closest('.session-title').querySelector('.session-title-text');
+      startEditingSessionTitle(session, titleEl);
+    });
+    sessionMenu.querySelector('[data-action="reassign"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      sessionMenu.hidden = true;
+      showLinkEventMenu(btn, sessionId);
+    });
+    sessionMenu.querySelector('[data-action="delete"]').addEventListener('click', (e) => {
+      e.stopPropagation();
+      sessionMenu.hidden = true;
+      const count = session.tracks.length;
+      showConfirmModal({
+        title: 'Delete session?',
+        body: `This permanently deletes "${session.eventTitle}" and its ${count} track${count === 1 ? '' : 's'}. This can't be undone.`,
+        confirmLabel: 'Delete',
+        onConfirm: async () => {
+          await fetch(`/api/sessions/${sessionId}`, { method: 'DELETE' });
+          loadHistory();
+        },
+      });
+    });
+  }
+
+  const confirmModalOverlay = document.getElementById('confirmModalOverlay');
+  const confirmModalTitle = document.getElementById('confirmModalTitle');
+  const confirmModalBody = document.getElementById('confirmModalBody');
+  const confirmModalCancel = document.getElementById('confirmModalCancel');
+  const confirmModalConfirm = document.getElementById('confirmModalConfirm');
+
+  function showConfirmModal({ title, body, confirmLabel, onConfirm }) {
+    confirmModalTitle.textContent = title;
+    confirmModalBody.textContent = body;
+    confirmModalConfirm.textContent = confirmLabel || 'Confirm';
+    confirmModalOverlay.hidden = false;
+
+    const cleanup = () => {
+      confirmModalOverlay.hidden = true;
+      confirmModalConfirm.removeEventListener('click', onConfirmClick);
+      confirmModalCancel.removeEventListener('click', onCancelClick);
+    };
+    const onConfirmClick = () => { cleanup(); onConfirm(); };
+    const onCancelClick = () => cleanup();
+    confirmModalConfirm.addEventListener('click', onConfirmClick);
+    confirmModalCancel.addEventListener('click', onCancelClick);
+  }
+
+  confirmModalOverlay.addEventListener('click', (e) => {
+    if (e.target === confirmModalOverlay) confirmModalOverlay.hidden = true;
+  });
 
   function startEventFromSession(session) {
     switchTab('events');
@@ -1562,6 +1752,7 @@
 
   setupDropdown(historyFilterBtn, historyFilterMenu, historyFilterLabel, (v) => { historyFilterValue = v; applyHistoryView(); });
   setupDropdown(historySortBtn, historySortMenu, historySortLabel, (v) => { historySortValue = v; applyHistoryView(); });
+  setupDropdown(trackSortBtn, trackSortMenu, trackSortLabel, (v) => { trackSortOrder = v; renderTracks(); });
   historySearchEl.addEventListener('input', applyHistoryView);
 
   async function loadHistory() {
@@ -1604,12 +1795,18 @@
     });
   });
 
+  try {
+    const savedTab = localStorage.getItem('earshot_active_tab');
+    if (savedTab && tabPanels[savedTab]) switchTab(savedTab);
+  } catch (e) {}
+
   renderTracks();
   refreshCalendarStatus();
   refreshSpotifyStatus();
   loadProfile();
   loadEvents();
   loadHistory();
+  loadRecentlyHeard();
   pollClassStatus();
   setInterval(pollClassStatus, POLL_MS);
 </script>

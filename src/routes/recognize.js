@@ -16,6 +16,7 @@ router.post("/api/recognize", upload.single("clip"), async (req, res) => {
     const form = new FormData();
     form.append("api_token", process.env.AUDD_API_TOKEN);
     form.append("file", req.file.buffer, { filename: "clip.webm" });
+    form.append("return", "spotify,apple_music");
 
     const audd = await axios.post("https://api.audd.io/", form, {
       headers: form.getHeaders(),
@@ -25,12 +26,17 @@ router.post("/api/recognize", upload.single("clip"), async (req, res) => {
     const result = audd.data?.result;
     if (!result) return res.json({ matched: false });
 
+    const appleArtwork = result.apple_music?.artwork?.url
+      ? result.apple_music.artwork.url.replace("{w}", "200").replace("{h}", "200")
+      : null;
+
     const track = {
       title: result.title,
       artist: result.artist,
       album: result.album,
       spotifyUrl: result.spotify?.external_urls?.spotify || null,
       appleMusicUrl: result.apple_music?.url || null,
+      artworkUrl: result.spotify?.album?.images?.[0]?.url || appleArtwork || null,
       playedAt: new Date().toISOString(),
     };
 
