@@ -14,12 +14,10 @@ router.post("/api/sessions/:id/end", (req, res) => {
   res.json(session);
 });
 
+// Blank eventTitle resets to the session's original calendar title.
 router.post("/api/sessions/:id/rename", (req, res) => {
   const { eventTitle } = req.body || {};
-  if (!eventTitle || !eventTitle.trim()) {
-    return res.status(400).json({ error: "eventTitle is required" });
-  }
-  const session = store.renameSession(req.params.id, eventTitle.trim());
+  const session = store.renameSession(req.params.id, eventTitle);
   if (!session) return res.status(404).json({ error: "Session not found." });
   res.json(session);
 });

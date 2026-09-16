@@ -21,4 +21,4 @@ app.use(sessionRoutes);
 app.use(spotifyRoutes);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Calendar class app running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Earshot running at http://localhost:${PORT}`));

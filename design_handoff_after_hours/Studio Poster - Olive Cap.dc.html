@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Public+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" />
+<style>
+  body { margin: 0; background: #EDEBEF; }
+  a { color: #425D28; }
+  a:hover { color: #E97BB2; }
+</style>
+</helmet>
+
+<div style="display:flex; flex-direction:column; gap:20px; padding:40px 32px 56px; font-family:'Public Sans',system-ui,sans-serif; color:#2B2740; align-items:flex-start">
+  <div style="display:flex; flex-direction:column; gap:6px; max-width:420px">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#6F6A8C">Parked variant · Studio Poster</div>
+    <h1 style="margin:0; font-family:'Instrument Serif',serif; font-weight:400; font-size:30px; line-height:1.05">Olive cap</h1>
+    <p style="margin:0; font-size:13px; line-height:1.6; color:#6F6A8C; text-wrap:pretty">Kept for later: olive only at the top, paper below. Instrument Serif headlines, Public Sans UI, IBM Plex Mono for anything numeric. Idle Home and History.</p>
+  </div>
+
+  <div style="display:flex; gap:6px; width:390px">
+    <div style="flex:2; height:40px; border-radius:6px; background:#425D28"></div>
+    <div style="flex:1; height:40px; border-radius:6px; background:#B7CE8E"></div>
+    <div style="flex:1; height:40px; border-radius:6px; background:#E97BB2"></div>
+    <div style="flex:1; height:40px; border-radius:6px; background:#F4F7EC; border:1px solid #C9C4E8"></div>
+  </div>
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#6F6A8C; letter-spacing:0.04em">#425D28 ground · #B7CE8E fill · #E97BB2 live · #F4F7EC paper</div>
+
+  <div style="width:390px; background:#F4F7EC; border-radius:26px; overflow:hidden; border:1px solid #C9C4E8">
+    <div style="background:#425D28; color:#F4F7EC; padding:26px 22px 20px; display:flex; flex-direction:column; gap:14px">
+      <div style="font-family:'Instrument Serif',serif; font-size:34px; line-height:1">Class Tracklist</div>
+      <div style="font-size:13px; line-height:1.5; color:#D6E3C3; max-width:280px">Nothing on the calendar for the next few hours.</div>
+      <div style="display:flex; gap:22px; border-top:1px solid rgba(183,206,142,0.35); padding-top:12px; font-size:12px; font-weight:700; letter-spacing:0.04em">
+        <span style="color:#F4F7EC; border-bottom:2px solid #E97BB2; padding-bottom:4px">HOME</span>
+        <span style="color:#9FB584">HISTORY</span>
+        <span style="color:#9FB584">SETTINGS</span>
+      </div>
+    </div>
+    <div style="padding:20px 22px 26px; display:flex; flex-direction:column; gap:18px">
+      <div style="display:flex; flex-direction:column; gap:2px; border-left:2px solid #C9C4E8; padding:2px 0 2px 10px">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.1em; color:#6F6A8C">NEXT UP · GOOGLE</span>
+        <span style="font-size:14px; font-weight:700">Pilates · tomorrow, 7:00am</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px; padding:22px 0 24px; border-top:1px solid #DCE3CF; border-bottom:1px solid #DCE3CF">
+        <div style="font-family:'Instrument Serif',serif; font-size:26px; line-height:1.15">Idle.</div>
+        <div style="font-size:13px; line-height:1.55; color:#6F6A8C">Auto-listen is on. Leave this tab open and it'll start on its own when class begins.</div>
+      </div>
+      <button style="background:#425D28; color:#F4F7EC; border:none; border-radius:6px; padding:14px; font-size:13px; font-weight:700; letter-spacing:0.03em; cursor:pointer" style-hover="background:#33421F">Start manually</button>
+    </div>
+  </div>
+
+  <div style="width:390px; background:#F4F7EC; border-radius:26px; overflow:hidden; border:1px solid #C9C4E8">
+    <div style="background:#425D28; color:#F4F7EC; padding:22px 22px 18px; display:flex; flex-direction:column; gap:12px">
+      <div style="font-family:'Instrument Serif',serif; font-size:30px; line-height:1">History</div>
+      <div style="display:flex; gap:22px; border-top:1px solid rgba(183,206,142,0.35); padding-top:12px; font-size:12px; font-weight:700; letter-spacing:0.04em">
+        <span style="color:#9FB584">HOME</span>
+        <span style="color:#F4F7EC; border-bottom:2px solid #E97BB2; padding-bottom:4px">HISTORY</span>
+        <span style="color:#9FB584">SETTINGS</span>
+      </div>
+    </div>
+    <div style="padding:16px 22px 26px; display:flex; flex-direction:column; gap:10px">
+      <div style="background:#FFFFFF; border:1px solid #C9C4E8; border-radius:8px; padding:14px 16px; display:flex; flex-direction:column; gap:10px">
+        <div style="display:flex; justify-content:space-between; align-items:baseline">
+          <span style="font-size:14px; font-weight:700">Spin w/ Jordan</span>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#425D28">14 TRACKS</span>
+        </div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em; color:#6F6A8C">TUE SEP 9 · 6:15AM</div>
+        <div style="display:flex; flex-direction:column; gap:0; border-top:1px solid #DCE3CF; padding-top:6px">
+          <div style="display:flex; gap:12px; padding:9px 0; border-bottom:1px solid #EFEDFA">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#425D28; width:18px">01</span>
+            <span style="flex:1; font-size:13px; font-weight:700">Losing It <span style="font-weight:400; color:#6F6A8C">Fisher</span></span>
+          </div>
+          <div style="display:flex; gap:12px; padding:9px 0; border-bottom:1px solid #EFEDFA">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#425D28; width:18px">02</span>
+            <span style="flex:1; font-size:13px; font-weight:700">Body Language <span style="font-weight:400; color:#6F6A8C">Kaskade</span></span>
+          </div>
+          <div style="display:flex; gap:12px; padding:9px 0">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#425D28; width:18px">03</span>
+            <span style="flex:1; font-size:13px; font-weight:700">Hungry <span style="font-weight:400; color:#6F6A8C">Chris Lake</span></span>
+          </div>
+        </div>
+      </div>
+      <div style="background:#FFFFFF; border:1px solid #C9C4E8; border-radius:8px; padding:14px 16px; display:flex; justify-content:space-between; align-items:baseline">
+        <div style="display:flex; flex-direction:column; gap:5px">
+          <span style="font-size:14px; font-weight:700">HIIT 45</span>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em; color:#6F6A8C">SUN SEP 7 · 9:00AM</span>
+        </div>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#425D28">11 TRACKS</span>
+      </div>
+      <div style="background:#FFFFFF; border:1px solid #C9C4E8; border-radius:8px; padding:14px 16px; display:flex; justify-content:space-between; align-items:baseline">
+        <div style="display:flex; flex-direction:column; gap:5px">
+          <span style="font-size:14px; font-weight:700">Manual session</span>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em; color:#6F6A8C">SAT SEP 6 · 5:40PM</span>
+        </div>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#A29CBF">0 TRACKS</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 460, &quot;height&quot;: 1000}}"></script>
+</body>
+</html>

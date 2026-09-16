@@ -1,4 +1,4 @@
-# Class Tracklist — with calendar auto-start
+# Earshot — with calendar auto-start
 
 Same idea as before — listens for a few seconds every 2 minutes during class
 and builds a list of what played — but now it checks Google, Outlook, and

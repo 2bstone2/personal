@@ -3,205 +3,301 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Class Tracklist</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+<title>Earshot</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='0.5' y='0.5' width='31' height='31' rx='8' fill='%23211D42' stroke='rgba(239,237,250,0.3)'/%3E%3Cpath d='M16 6.5 A9.5 9.5 0 0 1 16 25.5' stroke='%23E97BB2' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%23E97BB2'/%3E%3C/svg%3E" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,700;112,800;100,400&family=Manrope:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" />
 <style>
   :root {
-    --bg: #F7F5FB;
-    --surface: #FFFFFF;
-    --surface-alt: #EFEDFA;
-    --border: #E1DEF2;
-    --border-strong: #C9C4E8;
-    --text: #2B2740;
-    --muted: #6F6A8C;
-    --faint: #A29CBF;
-
-    --primary: #E97BB2;
-    --on-primary: #3B1830;
+    --field: #211D42;
+    --field-deep: #17142F;
+    --card: rgba(239,237,250,0.07);
+    --card-hairline: rgba(239,237,250,0.14);
+    --outline: rgba(239,237,250,0.30);
+    --text: #EFEDFA;
+    --text-muted: #C9C4E8;
+    --text-faint: #9089B0;
+    --accent: #ABDF53;
+    --on-accent: #1F2B06;
+    --accent-hover: #BAE770;
     --secondary: #9093EF;
-    --on-secondary: #211D42;
-    --support: #B7CE8E;
-    --on-support: #33421F;
-    --matcha: #B7CE8E;
-    --on-matcha: #33421F;
-    --olive: #425D28;
-    --on-olive: #F4F7EC;
+    --live: #E97BB2;
+    --on-live: #3B1830;
+    --live-deep: #C2447F;
     --danger: #FF2130;
     --on-danger: #FFFFFF;
 
-    --font-display: 'Baloo 2', ui-rounded, 'SF Pro Rounded', sans-serif;
-    --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+    --font-display: 'Archivo', sans-serif;
+    --font-body: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Space Mono', ui-monospace, 'SF Mono', monospace;
 
-    --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
-    --radius-sm: 10px; --radius-md: 16px; --radius-lg: 24px; --radius-pill: 999px;
+    --radius-checkbox: 5px;
+    --radius-md: 14px;
+    --radius-lg: 26px;
+    --radius-pill: 99px;
   }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
-  .wrap { max-width: 480px; margin: 0 auto; padding: 40px 20px 60px; }
-  h1 { font-family: var(--font-display); font-weight: 700; font-size: 2.25rem; letter-spacing: 0.01em; margin: 0; }
-  h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; margin: 28px 0 8px; }
-  h2:first-child { margin-top: 4px; }
-  .sub { color: var(--muted); font-size: 0.9rem; margin-top: 6px; line-height: 1.5; }
-  .tabs { display: flex; gap: 0; margin-top: 24px; border-bottom: 1px solid var(--border); }
+  body { margin: 0; background: var(--field-deep); color: var(--text); font-family: var(--font-body); min-height: 100vh; padding: 24px 16px; }
+  .wrap { max-width: 480px; margin: 0 auto; background: var(--field); border-radius: var(--radius-lg); overflow: hidden; }
+  .header-block { padding: 26px 22px 18px; display: flex; flex-direction: column; gap: 16px; }
+  .content-block { padding: 0 22px 26px; display: flex; flex-direction: column; gap: 14px; }
+
+  .screen-title { font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: 30px; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; margin: 0; }
+  .sub { color: var(--text-muted); font-size: 13px; line-height: 1.55; }
+
+  /* brand mark + wordmark */
+  .header-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .brand-row { display: flex; align-items: center; gap: 12px; }
+  .brand-mark {
+    width: 32px; height: 32px; border: 1.5px solid transparent; border-right-color: var(--accent);
+    border-top-color: var(--accent); border-radius: 50%; transform: rotate(45deg);
+    display: flex; align-items: center; justify-content: center; flex: none;
+  }
+  .brand-mark-inner {
+    width: 20px; height: 20px; border: 3.5px solid transparent; border-right-color: var(--live);
+    border-top-color: var(--live); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+  .brand-mark-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); transform: rotate(-45deg); }
+  .brand-word { display: flex; align-items: flex-end; gap: 3px; }
+  .brand-word-text {
+    font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: 25px;
+    line-height: 0.9; letter-spacing: -0.03em; text-transform: uppercase;
+  }
+  .brand-period { width: 7px; height: 7px; border-radius: 50%; background: var(--live); margin-bottom: 3px; flex: none; }
+
+  .live-tag {
+    align-items: center; gap: 6px; background: var(--live-deep); color: #FFFFFF; padding: 4px 9px;
+    border-radius: 4px; font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase; flex: none;
+  }
+  .live-tag:not([hidden]) { display: inline-flex; }
+  .live-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: #FFFFFF; flex-shrink: 0; }
+
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
   .tab-btn {
-    background: none; border: none; color: var(--muted); font-family: var(--font-body); font-size: 0.85rem;
-    font-weight: 800; padding: 10px 4px; margin-right: 22px; cursor: pointer; border-bottom: 2px solid transparent;
+    background: var(--card); color: var(--text-muted); font-family: var(--font-body); font-size: 12px;
+    font-weight: 700; padding: 7px 14px; border-radius: var(--radius-pill); border: none; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
   }
-  .tab-btn.active { color: var(--text); border-bottom-color: var(--primary); }
+  .tab-btn.active { background: var(--accent); color: var(--on-accent); }
+  .pill-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--live); flex-shrink: 0; display: none; }
+  .tab-btn.active .pill-dot { display: inline-block; }
   .tab-panel[hidden] { display: none; }
-  .section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-4) var(--space-5); margin-top: 10px; }
-  .provider-block { padding: 10px 0; }
-  .provider-block + .provider-block { border-top: 1px solid var(--border); }
-  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .row-action { padding-top: 8px; }
-  .provider-name { font-size: 0.92rem; font-weight: 700; }
-  .chip { font-family: var(--font-body); font-weight: 700; font-size: 0.72rem; padding: 4px 12px; border-radius: var(--radius-pill); }
-  .chip.connected { background: color-mix(in srgb, var(--support) 35%, var(--surface)); color: var(--on-support); }
-  .chip.off { background: var(--surface-alt); color: var(--muted); }
-  button { font-family: inherit; }
-  button.link-btn { background: none; border: 2px solid var(--border-strong); color: var(--text); font-weight: 700; font-size: 0.8rem; padding: 7px 16px; border-radius: var(--radius-pill); cursor: pointer; }
-  button.link-btn:hover { border-color: var(--secondary); }
-  button.link-btn.danger { color: var(--danger); border-color: var(--danger); }
-  input[type=text], input[type=password], input[type=email] {
-    background: var(--bg); color: var(--text); border: 2px solid var(--border-strong);
-    border-radius: var(--radius-md); padding: 9px 12px; font-size: 0.85rem; width: 100%; font-family: var(--font-body);
+
+  /* live session line / idle block */
+  .live-session-line { align-items: center; gap: 8px; }
+  .live-session-line:not([hidden]) { display: flex; }
+  .live-session-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); flex-shrink: 0; }
+  #liveSessionText { font-size: 13px; font-weight: 700; }
+  .idle-empty { flex-direction: column; gap: 8px; padding: 24px 0; border-top: 1px solid var(--card-hairline); border-bottom: 1px solid var(--card-hairline); }
+  .idle-empty:not([hidden]) { display: flex; }
+  .idle-heading { font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: 22px; letter-spacing: -0.01em; text-transform: uppercase; color: var(--secondary); }
+  .idle-sub { font-size: 13px; line-height: 1.55; color: var(--text-muted); }
+  .idle-sub.is-error { color: var(--danger); }
+  .next-up { flex-direction: column; gap: 4px; }
+  .next-up:not([hidden]) { display: flex; }
+  .next-up-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--secondary); text-transform: uppercase; }
+  .next-up-value { font-size: 14px; font-weight: 700; }
+
+  .timer { font-family: var(--font-mono); font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: var(--accent); text-align: center; }
+
+  .col-header { justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
+  .col-header:not([hidden]) { display: flex; }
+
+  #list { display: flex; flex-direction: column; gap: 8px; }
+  .track { background: var(--card); border-radius: var(--radius-md); padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+  .track-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); width: 18px; flex-shrink: 0; }
+  .track-info { flex: 1; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .track-info .title { font-size: 15px; font-weight: 700; }
+  .track-info .artist { font-size: 12px; color: var(--text-muted); }
+  .track-links { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .track-link {
+    font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+    padding: 3px 8px; border-radius: var(--radius-pill); text-decoration: none; text-transform: uppercase;
   }
-  input:focus-visible { outline: none; border-color: var(--primary); }
-  .history-toolbar { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-  .history-search { width: 100%; }
-  .history-filters { display: flex; gap: 10px; }
+  .track-link.spotify { background: var(--accent); color: var(--on-accent); }
+  .track-link.apple { background: none; border: 1px solid var(--outline); color: var(--text); }
+  .track-time { font-family: var(--font-mono); font-size: 11px; color: var(--text-muted); white-space: nowrap; }
+  .empty { color: var(--text-muted); font-size: 13px; }
+
+  .actions-row { display: flex; gap: 8px; }
+
+  button { font-family: inherit; }
+  button.primary {
+    background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-pill);
+    padding: 14px; font-family: var(--font-body); font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: background 120ms ease;
+  }
+  button.primary:hover { background: var(--accent-hover); }
+  button.start, button.stop, button.link-btn {
+    background: none; border: 1px solid var(--outline); color: var(--text); border-radius: var(--radius-pill);
+    font-family: var(--font-body); font-weight: 700; cursor: pointer; transition: border-color 120ms ease, color 120ms ease;
+  }
+  button.start, button.stop { padding: 14px 20px; font-size: 13px; }
+  button.link-btn { padding: 6px 14px; font-size: 12px; }
+  button.start:hover { border-color: var(--accent); color: var(--accent); }
+  button.stop:hover { border-color: var(--live); color: var(--live); }
+  button.link-btn:hover { border-color: var(--accent); color: var(--accent); }
+  button.link-btn.danger { border-color: var(--danger); color: var(--danger); }
+  button:disabled { background: var(--card) !important; color: var(--text-faint) !important; border-color: transparent !important; cursor: default; }
+
+  .export { flex: 1; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-pill); padding: 14px; font-family: var(--font-body); font-size: 13px; font-weight: 700; cursor: pointer; transition: background 120ms ease; }
+  .export:hover { background: var(--accent-hover); }
+
+  .section-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--secondary); }
+  .settings-section { display: flex; flex-direction: column; gap: 10px; }
+  .settings-sections { display: flex; flex-direction: column; gap: 22px; }
+
+  .provider-block { background: var(--card); border-radius: var(--radius-md); padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .provider-name { font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+  .provider-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); flex-shrink: 0; display: none; }
+  .provider-dot.connected { display: inline-block; }
+  .chip { font-family: var(--font-mono); font-weight: 700; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: var(--radius-pill); }
+  .chip.connected { background: var(--accent); color: var(--on-accent); }
+  .chip.off { background: var(--card); color: var(--text-faint); border: 1px solid var(--card-hairline); }
+
+  input[type=text], input[type=password], input[type=email] {
+    background: var(--card); color: var(--text); border: 1px solid var(--outline);
+    border-radius: var(--radius-md); padding: 10px 12px; font-size: 13px; width: 100%; font-family: var(--font-body);
+  }
+  input::placeholder { color: var(--text-faint); }
+  input:focus-visible { outline: none; border-color: var(--accent); }
+  .apple-form { display: none; flex-direction: column; gap: 8px; }
+  .apple-form.open { display: flex; }
+
+  .small-note { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+  .small-note a { color: var(--secondary); font-weight: 700; text-decoration: none; }
+  .small-note a:hover { text-decoration: underline; }
+
+  .history-toolbar { display: flex; flex-direction: column; gap: 10px; }
   .select-wrap { position: relative; display: inline-flex; }
   select {
     appearance: none; -webkit-appearance: none; -moz-appearance: none;
-    background: var(--surface); color: var(--text); border: 2px solid var(--border-strong);
-    border-radius: var(--radius-pill); padding: 7px 26px 7px 14px; font-size: 0.8rem; font-weight: 700;
+    background: var(--card); color: var(--text); border: 1px solid var(--outline);
+    border-radius: var(--radius-pill); padding: 7px 26px 7px 14px; font-size: 12px; font-weight: 700;
     font-family: var(--font-body); cursor: pointer;
   }
-  select:focus-visible { outline: none; border-color: var(--primary); }
-  .select-caret {
-    position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
-    font-size: 0.65rem; color: var(--muted); pointer-events: none;
-  }
-  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-  .tag-chip-placeholder { background: none; border: 2px dashed var(--border-strong); color: var(--faint); font-style: italic; padding: 5px 13px; }
+  select:focus-visible { outline: none; border-color: var(--accent); }
+  .history-filters { display: flex; gap: 10px; }
+  .select-caret { position: absolute; right: 11px; top: 50%; transform: translateY(-50%); font-size: 9px; color: var(--text-faint); pointer-events: none; }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag-chip-placeholder { background: none; border: 1px dashed var(--accent); color: var(--text-faint); font-style: italic; padding: 5px 13px; font-size: 12px; }
   .tag-chip {
-    display: inline-flex; align-items: center; gap: 4px; font-weight: 700; font-size: 0.78rem;
-    padding: 6px 8px 6px 13px; border-radius: var(--radius-pill);
-    background: color-mix(in srgb, var(--secondary) 20%, var(--surface)); color: var(--on-secondary);
+    display: inline-flex; align-items: center; gap: 4px; font-weight: 700; font-size: 12px;
+    padding: 6px 8px 6px 12px; border-radius: var(--radius-pill); background: rgba(239,237,250,0.1); color: var(--text);
   }
-  .tag-chip button {
-    background: none; border: none; color: inherit; font-size: 1rem; line-height: 1; cursor: pointer;
-    padding: 2px 4px; opacity: 0.65; font-family: inherit;
-  }
+  .tag-chip button { background: none; border: none; color: inherit; font-size: 1rem; line-height: 1; cursor: pointer; padding: 2px 4px; opacity: 0.6; font-family: inherit; }
   .tag-chip button:hover { opacity: 1; }
   .tag-input-wrap { position: relative; }
   .tag-suggestions {
-    position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface);
-    border: 2px solid var(--border-strong); border-radius: var(--radius-md); max-height: 190px;
-    overflow-y: auto; z-index: 5; box-shadow: 0 8px 20px rgba(43,39,64,0.12);
+    position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--field);
+    border: 1px solid var(--outline); border-radius: var(--radius-md); max-height: 190px;
+    overflow-y: auto; z-index: 5; box-shadow: 0 8px 20px rgba(0,0,0,0.35);
   }
-  .tag-suggestion { padding: 9px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
-  .tag-suggestion:hover, .tag-suggestion.active { background: var(--surface-alt); }
-  .tag-suggestion.create { color: var(--secondary); }
-  .apple-form { display: none; flex-direction: column; gap: 8px; margin-top: 8px; }
-  .apple-form.open { display: flex; }
-  .small-note { font-size: 0.75rem; color: var(--faint); margin-top: 4px; }
-  .controls { margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
-  button.primary, button.stop, button.start { font-weight: 800; font-size: 0.95rem; border: none; border-radius: var(--radius-pill); padding: 13px 22px; cursor: pointer; }
-  button.primary { background: var(--primary); color: var(--on-primary); }
-  button.start { background: var(--olive); color: var(--on-olive); }
-  button.stop { background: transparent; color: var(--danger); border: 2px solid var(--danger); }
-  button:disabled { opacity: 0.4; cursor: default; }
-  .timer { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 600; letter-spacing: 0.04em; color: var(--primary); text-align: center; margin-top: 16px; }
-  .status { margin-top: 14px; background: var(--surface-alt); border-left: 4px solid var(--border-strong); padding: 12px 14px; font-size: 0.85rem; color: var(--muted); border-radius: var(--radius-sm); }
-  .status.listening { border-left-color: var(--primary); color: var(--text); }
-  .status.detected { border-left-color: var(--danger); color: var(--text); }
-  #list { margin-top: 20px; }
-  .track { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .track-info .title { font-size: 0.92rem; font-weight: 700; }
-  .track-info .artist { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
-  .track-links { display: flex; gap: 8px; margin-top: 6px; }
-  .track-link { font-size: 0.7rem; font-weight: 700; text-decoration: none; padding: 3px 10px; border-radius: var(--radius-pill); }
-  .track-link.spotify { background: rgba(29,185,84,0.15); color: #1DB954; }
-  .track-link.apple { background: rgba(252,61,86,0.15); color: #FC3D56; }
-  .track-time { font-family: var(--font-mono); color: var(--faint); font-size: 0.72rem; white-space: nowrap; }
-  .empty { color: var(--muted); font-size: 0.85rem; margin-top: 20px; }
-  .event-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; }
-  .event-row + .event-row { border-top: 1px solid var(--border); }
-  .event-row input[type=checkbox] { margin-top: 3px; accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
-  .event-title { font-size: 0.88rem; font-weight: 600; }
-  .event-time { font-family: var(--font-mono); color: var(--muted); font-size: 0.74rem; margin-top: 3px; }
-  .event-group-label { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--faint); margin: 14px 0 2px; }
+  .tag-suggestion { padding: 9px 14px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .tag-suggestion:hover, .tag-suggestion.active { background: var(--card); }
+  .tag-suggestion.create { color: var(--accent); }
+
+  .mic-card { background: var(--card); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+
+  #eventsList { display: flex; flex-direction: column; gap: 8px; }
+  .event-group-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--secondary); margin-top: 6px; }
   .event-group-label:first-child { margin-top: 0; }
-  .events-empty { color: var(--muted); font-size: 0.82rem; }
+  .event-row { background: var(--card); border-radius: var(--radius-md); padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+  .event-row input[type=checkbox] {
+    appearance: none; -webkit-appearance: none; width: 18px; height: 18px; border-radius: var(--radius-checkbox);
+    border: 1px solid var(--outline); flex-shrink: 0; margin-top: 1px; cursor: pointer; position: relative;
+  }
+  .event-row input[type=checkbox]:checked { background: var(--accent); border-color: var(--accent); }
+  .event-row input[type=checkbox]:checked::after {
+    content: '✓'; color: var(--on-accent); font-size: 11px; font-weight: 700;
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  }
+  .event-row input[type=checkbox]:disabled { cursor: default; }
+  .event-title { font-size: 14px; font-weight: 700; }
+  .event-time { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; margin-top: 4px; text-transform: uppercase; }
+  .events-empty { color: var(--text-muted); font-size: 13px; }
   .events-empty a { color: var(--secondary); font-weight: 700; text-decoration: none; }
   .events-empty a:hover { text-decoration: underline; }
-  .export { margin-top: 20px; background: transparent; color: var(--muted); border: 2px solid var(--border-strong); border-radius: var(--radius-pill); padding: 8px 16px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
-  .export:hover { border-color: var(--primary); color: var(--text); }
-  .session-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); margin-top: 8px; overflow: hidden; }
-  .session-head { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; background: none; border: none; color: inherit; cursor: pointer; text-align: left; font-family: inherit; }
-  .session-caret { font-size: 0.8rem; color: var(--faint); margin-left: 10px; flex-shrink: 0; transition: transform 0.15s ease; }
+
+  #historyList { display: flex; flex-direction: column; gap: 8px; }
+  .session-card { background: var(--card); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .session-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; cursor: pointer; }
+  .session-caret { font-size: 10px; color: var(--text-faint); margin-left: 10px; flex-shrink: 0; transition: transform 0.15s ease; }
   .session-head.open .session-caret { transform: rotate(180deg); }
-  .session-title { font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-  .session-edit-btn {
-    background: none; border: none; color: var(--faint); font-size: 0.78rem; cursor: pointer;
-    padding: 2px 4px; line-height: 1; opacity: 0.7;
-  }
-  .session-edit-btn:hover { opacity: 1; color: var(--secondary); }
+  .session-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .session-edit-btn { background: none; border: none; color: var(--text-faint); cursor: pointer; padding: 2px 4px; display: inline-flex; align-items: center; }
+  .session-edit-btn:hover { color: var(--secondary); }
   .session-title-input {
-    font-size: 0.9rem; font-weight: 700; font-family: var(--font-body); color: var(--text);
-    background: var(--bg); border: 2px solid var(--primary); border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 700; font-family: var(--font-body); color: var(--text);
+    background: var(--field); border: 1px solid var(--accent); border-radius: var(--radius-checkbox);
     padding: 3px 8px; width: 100%; max-width: 220px;
   }
-  .session-actions { padding: 0 14px 12px; border-top: 1px solid var(--border); padding-top: 10px; }
-  .session-meta { font-family: var(--font-mono); color: var(--muted); font-size: 0.74rem; margin-top: 3px; }
-  .session-tracks { border-top: 1px solid var(--border); padding: 4px 14px; }
-  .session-track { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
-  .session-track:last-child { border-bottom: none; }
-  .session-track-num { font-family: var(--font-mono); color: var(--faint); font-size: 0.72rem; width: 16px; text-align: right; flex-shrink: 0; }
+  .session-count { font-family: var(--font-mono); font-size: 10px; color: var(--accent); text-transform: uppercase; flex-shrink: 0; }
+  .session-count.zero { color: var(--text-faint); }
+  .session-meta { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .session-actions { border-top: 1px solid var(--card-hairline); padding-top: 10px; }
+  .session-tracks { border-top: 1px solid var(--card-hairline); padding-top: 4px; display: flex; flex-direction: column; }
+  .session-track { display: flex; gap: 12px; padding: 9px 0; align-items: baseline; }
+  .session-track-num { font-family: var(--font-mono); color: var(--accent); font-size: 11px; width: 18px; flex-shrink: 0; }
+  .session-track .title { font-size: 13px; font-weight: 700; }
+  .session-track .artist { font-size: 13px; font-weight: 400; color: var(--text-muted); }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Class Tracklist</h1>
-  <div class="sub">Listens for a few seconds every 2 minutes and builds a list of what played.</div>
-
-  <nav class="tabs">
-    <button class="tab-btn active" data-tab="home">Home</button>
-    <button class="tab-btn" data-tab="history">History</button>
-    <button class="tab-btn" data-tab="settings">Settings</button>
-  </nav>
-
-  <section class="tab-panel" id="tab-home">
-    <h2>Listening</h2>
-    <div class="section">
-      <div class="small-note">First, enable microphone access once so auto-start can work without you tapping anything mid-class.</div>
-      <div class="controls" style="justify-content: center;">
-        <button class="primary" id="enableMicBtn">Enable auto-listen</button>
+  <div class="header-block">
+    <div class="header-top">
+      <div class="brand-row">
+        <div class="brand-mark"><div class="brand-mark-inner"><div class="brand-mark-dot"></div></div></div>
+        <div class="brand-word"><span class="brand-word-text">Earshot</span><span class="brand-period"></span></div>
       </div>
-      <div class="controls" style="margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); justify-content: center;">
-        <button class="start" id="startStopBtn">Start manually</button>
-        <button class="link-btn" id="pauseBtn" hidden>Pause</button>
-      </div>
-      <div class="timer" id="timer" hidden>00:00</div>
+      <div class="live-tag" id="liveTag" hidden><span class="live-tag-dot"></span>Live</div>
     </div>
 
-    <h2>Upcoming events</h2>
-    <div class="section">
-      <div class="small-note">Tracked events count as a class automatically — by keyword, or a location that looks like a gym or studio. Check an untracked event to include it anyway.</div>
-      <div id="eventsList" style="margin-top:10px;"></div>
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="home"><span class="pill-dot"></span>Home</button>
+      <button class="tab-btn" data-tab="history"><span class="pill-dot"></span>History</button>
+      <button class="tab-btn" data-tab="settings"><span class="pill-dot"></span>Settings</button>
+    </nav>
+  </div>
+
+  <section class="tab-panel content-block" id="tab-home">
+    <div class="live-session-line" id="liveSessionLine" hidden>
+      <span class="live-session-dot"></span><span id="liveSessionText"></span>
+    </div>
+    <div class="idle-empty" id="idleArea">
+      <div class="idle-heading" id="idleHeading">Nothing yet</div>
+      <div class="idle-sub" id="idleSub">Checking your calendars…</div>
+    </div>
+    <div class="next-up" id="nextUp" hidden>
+      <span class="next-up-label" id="nextUpLabel"></span>
+      <span class="next-up-value" id="nextUpValue"></span>
     </div>
 
-    <div class="status" id="status">Checking your calendars…</div>
-
+    <div class="col-header" id="colHeader" hidden>
+      <span>NO.&nbsp;&nbsp;TRACK</span><span>TIME</span>
+    </div>
     <div id="list"></div>
-    <div class="empty" id="emptyMsg">No songs caught yet.</div>
-    <button class="export" id="exportBtn" style="display:none;">Copy list as text</button>
+    <div class="empty" id="emptyMsg" hidden>No songs caught yet.</div>
+
+    <div class="actions-row">
+      <button class="export" id="exportBtn" style="display:none;">Copy list</button>
+      <button class="start" id="startStopBtn">Start manually</button>
+      <button class="link-btn" id="pauseBtn" hidden>Pause</button>
+    </div>
+    <div class="timer" id="timer" hidden>00:00</div>
+
+    <div class="settings-section">
+      <div class="section-label">Upcoming events</div>
+      <div class="small-note">Tracked events count as a class automatically — by keyword, or a location that looks like a gym or studio. Check an untracked event to include it anyway.</div>
+      <div id="eventsList"></div>
+    </div>
   </section>
 
-  <section class="tab-panel" id="tab-history" hidden>
-    <h2>History</h2>
+  <section class="tab-panel content-block" id="tab-history" hidden>
+    <h1 class="screen-title">History</h1>
     <div class="history-toolbar">
       <input type="text" id="historySearch" class="history-search" placeholder="Search sessions or songs…" />
       <div class="history-filters">
@@ -230,62 +326,71 @@
     <div class="empty" id="historyEmpty">No past sessions yet.</div>
   </section>
 
-  <section class="tab-panel" id="tab-settings" hidden>
-    <h2>Calendars</h2>
-    <div class="section">
-      <div class="provider-block">
-        <div class="row">
-          <span class="provider-name">Google Calendar</span>
-          <span id="chip-google" class="chip off">Not connected</span>
+  <section class="tab-panel content-block" id="tab-settings" hidden>
+    <h1 class="screen-title">Settings</h1>
+    <div class="settings-sections">
+      <div class="settings-section">
+        <div class="section-label">Calendars</div>
+        <div class="provider-block">
+          <div class="row">
+            <span class="provider-name"><span class="provider-dot" id="dot-google"></span>Google Calendar</span>
+            <span id="chip-google" class="chip off">Not connected</span>
+          </div>
+          <div class="row-action" id="row-google-action"></div>
         </div>
-        <div class="row-action" id="row-google-action"></div>
+        <div class="provider-block">
+          <div class="row">
+            <span class="provider-name"><span class="provider-dot" id="dot-microsoft"></span>Outlook Calendar</span>
+            <span id="chip-microsoft" class="chip off">Not connected</span>
+          </div>
+          <div class="row-action" id="row-microsoft-action"></div>
+        </div>
+        <div class="provider-block">
+          <div class="row">
+            <span class="provider-name"><span class="provider-dot" id="dot-apple"></span>iCloud Calendar</span>
+            <span id="chip-apple" class="chip off">Not connected</span>
+          </div>
+          <div class="row-action" id="row-apple-action"></div>
+          <div class="apple-form" id="appleForm">
+            <input type="email" id="appleEmail" placeholder="Apple ID email" />
+            <input type="password" id="applePassword" placeholder="App-specific password" />
+            <div class="small-note">Generate one at appleid.apple.com — your regular Apple ID password won't work here.</div>
+            <button class="link-btn" id="appleSubmit">Connect</button>
+          </div>
+        </div>
       </div>
 
-      <div class="provider-block">
-        <div class="row">
-          <span class="provider-name">Outlook Calendar</span>
-          <span id="chip-microsoft" class="chip off">Not connected</span>
+      <div class="settings-section">
+        <div class="section-label">Music</div>
+        <div class="provider-block">
+          <div class="row">
+            <span class="provider-name"><span class="provider-dot" id="dot-spotify"></span>Spotify</span>
+            <span id="chip-spotify" class="chip off">Not connected</span>
+          </div>
+          <div class="row-action" id="row-spotify-action"></div>
         </div>
-        <div class="row-action" id="row-microsoft-action"></div>
+        <div class="small-note">Connect Spotify to turn any session's tracklist into a real playlist from its History card.</div>
       </div>
 
-      <div class="provider-block">
-        <div class="row">
-          <span class="provider-name">iCloud Calendar</span>
-          <span id="chip-apple" class="chip off">Not connected</span>
+      <div class="settings-section">
+        <div class="section-label">Class keywords</div>
+        <div class="tag-list" id="tagList"></div>
+        <div class="tag-input-wrap">
+          <input type="text" id="tagSearchInput" placeholder="Search or type your own…" autocomplete="off" />
+          <div class="tag-suggestions" id="tagSuggestions" hidden></div>
         </div>
-        <div class="row-action" id="row-apple-action"></div>
-        <div class="apple-form" id="appleForm">
-          <input type="email" id="appleEmail" placeholder="Apple ID email" />
-          <input type="password" id="applePassword" placeholder="App-specific password" />
-          <div class="small-note">Generate one at appleid.apple.com — your regular Apple ID password won't work here.</div>
-          <button class="link-btn" id="appleSubmit">Connect</button>
+        <div class="small-note">An event title matching any of these counts as a class — so will a location that looks like a gym or studio.</div>
+        <div class="actions-row">
+          <button class="link-btn" id="saveKeywords">Save</button>
         </div>
       </div>
-    </div>
 
-    <h2>Music</h2>
-    <div class="section">
-      <div class="provider-block">
-        <div class="row">
-          <span class="provider-name">Spotify</span>
-          <span id="chip-spotify" class="chip off">Not connected</span>
+      <div class="settings-section">
+        <div class="section-label">Microphone</div>
+        <div class="mic-card">
+          <span class="small-note">Auto-listen needs mic access granted once. The tab has to stay open and awake for the length of class.</span>
+          <button class="primary" id="enableMicBtn">Enable auto-listen</button>
         </div>
-        <div class="row-action" id="row-spotify-action"></div>
-      </div>
-      <div class="small-note" style="margin-top: 10px;">Connect Spotify to turn any session's tracklist into a real playlist from its History card.</div>
-    </div>
-
-    <h2>Class keywords</h2>
-    <div class="section">
-      <div class="small-note" style="margin-bottom: 10px;">A calendar event title containing any of these keywords will count as a class and trigger auto-listening — so will any event booked at a location that looks like a gym or studio.</div>
-      <div class="tag-list" id="tagList"></div>
-      <div class="tag-input-wrap">
-        <input type="text" id="tagSearchInput" placeholder="Search or type your own…" autocomplete="off" />
-        <div class="tag-suggestions" id="tagSuggestions" hidden></div>
-      </div>
-      <div class="controls" style="margin-top:10px;">
-        <button class="link-btn" id="saveKeywords">Save</button>
       </div>
     </div>
   </section>
@@ -299,11 +404,20 @@
   const startStopBtn = document.getElementById('startStopBtn');
   const pauseBtn = document.getElementById('pauseBtn');
   const enableMicBtn = document.getElementById('enableMicBtn');
-  const statusEl = document.getElementById('status');
   const listEl = document.getElementById('list');
   const emptyMsg = document.getElementById('emptyMsg');
   const exportBtn = document.getElementById('exportBtn');
   const timerEl = document.getElementById('timer');
+  const colHeader = document.getElementById('colHeader');
+  const liveTag = document.getElementById('liveTag');
+  const liveSessionLine = document.getElementById('liveSessionLine');
+  const liveSessionText = document.getElementById('liveSessionText');
+  const idleArea = document.getElementById('idleArea');
+  const idleHeading = document.getElementById('idleHeading');
+  const idleSub = document.getElementById('idleSub');
+  const nextUp = document.getElementById('nextUp');
+  const nextUpLabel = document.getElementById('nextUpLabel');
+  const nextUpValue = document.getElementById('nextUpValue');
   const tagList = document.getElementById('tagList');
   const tagSearchInput = document.getElementById('tagSearchInput');
   const tagSuggestions = document.getElementById('tagSuggestions');
@@ -341,13 +455,55 @@
     btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
 
-  // ---- mic capture loop (same mechanics as manual mode) ----
+  // ---- live tag / idle block ----
+
+  function showLive(sessionLabel) {
+    liveTag.hidden = false;
+    liveSessionLine.hidden = false;
+    liveSessionText.textContent = sessionLabel;
+    idleArea.hidden = true;
+    nextUp.hidden = true;
+    colHeader.hidden = false;
+  }
+
+  function showIdleMessage(text, isError) {
+    liveTag.hidden = true;
+    liveSessionLine.hidden = true;
+    colHeader.hidden = true;
+    idleArea.hidden = false;
+    idleHeading.textContent = 'Nothing yet';
+    idleSub.textContent = text;
+    idleSub.classList.toggle('is-error', !!isError);
+    nextUp.hidden = true;
+  }
+
+  function showIdleNext(event) {
+    liveTag.hidden = true;
+    liveSessionLine.hidden = true;
+    colHeader.hidden = true;
+    idleArea.hidden = false;
+    idleHeading.textContent = 'Nothing yet';
+    idleSub.textContent = "Auto-listen is on. It'll start on its own when a class begins.";
+    idleSub.classList.remove('is-error');
+    nextUp.hidden = false;
+    nextUpLabel.textContent = `Next up · ${event.source || ''}`;
+    const when = new Date(event.start);
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(now.getDate() + 1);
+    let dayLabel;
+    if (when.toDateString() === now.toDateString()) dayLabel = 'today';
+    else if (when.toDateString() === tomorrow.toDateString()) dayLabel = 'tomorrow';
+    else dayLabel = when.toLocaleDateString(undefined, { weekday: 'long' });
+    const timeLabel = when.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    nextUpValue.textContent = `${event.title} · ${dayLabel}, ${timeLabel}`;
+  }
 
   function setStatus(text, mode) {
-    statusEl.textContent = text;
-    statusEl.classList.remove('listening', 'detected');
-    if (mode) statusEl.classList.add(mode);
+    showIdleMessage(text, mode === 'error');
   }
+
+  // ---- mic capture loop (same mechanics as manual mode) ----
 
   function renderTracks() {
     if (tracks.length === 0) {
@@ -358,8 +514,9 @@
     }
     emptyMsg.style.display = 'none';
     exportBtn.style.display = 'inline-block';
-    listEl.innerHTML = tracks.map((t) => `
+    listEl.innerHTML = tracks.map((t, i) => `
       <div class="track">
+        <span class="track-num">${String(i + 1).padStart(2, '0')}</span>
         <div class="track-info">
           <div class="title">${escapeHtml(t.title)}</div>
           <div class="artist">${escapeHtml(t.artist)}</div>
@@ -373,7 +530,7 @@
   function trackLinksHTML(t) {
     const links = [];
     if (t.spotifyUrl) links.push(`<a class="track-link spotify" href="${t.spotifyUrl}" target="_blank">Spotify</a>`);
-    if (t.appleMusicUrl) links.push(`<a class="track-link apple" href="${t.appleMusicUrl}" target="_blank">Apple Music</a>`);
+    if (t.appleMusicUrl) links.push(`<a class="track-link apple" href="${t.appleMusicUrl}" target="_blank">Apple</a>`);
     return links.length ? `<div class="track-links">${links.join('')}</div>` : '';
   }
 
@@ -390,7 +547,6 @@
 
   async function captureAndSend() {
     if (!running || !stream) return;
-    setStatus(autoStarted ? 'Auto-listening for your class…' : 'Listening…', 'listening');
     const recorder = new MediaRecorder(stream);
     const chunks = [];
     recorder.ondataavailable = (e) => chunks.push(e.data);
@@ -424,7 +580,7 @@
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     } catch (e) {
-      setStatus(auto ? 'Class detected, but mic access isn\'t enabled — tap "Enable auto-listen".' : 'Microphone permission is needed to listen for songs.', null);
+      setStatus(auto ? 'Class detected, but mic access isn\'t enabled — tap "Enable auto-listen" in Settings.' : 'Microphone permission is needed to listen for songs.', 'error');
       return;
     }
     running = true;
@@ -455,6 +611,7 @@
     timerEl.hidden = false;
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
+    showLive(auto ? (event?.title || 'Class') : 'Manual session');
     captureAndSend();
     intervalId = setInterval(captureAndSend, CAPTURE_INTERVAL_MS);
   }
@@ -475,14 +632,12 @@
       timerInterval = setInterval(updateTimer, 1000);
       captureAndSend();
       intervalId = setInterval(captureAndSend, CAPTURE_INTERVAL_MS);
-      setStatus(autoStarted ? 'Auto-listening for your class…' : 'Listening…', 'listening');
     } else {
       paused = true;
       pauseBtn.textContent = 'Resume';
       elapsedBeforePause += Math.floor((Date.now() - sessionStartedAt) / 1000);
       clearInterval(timerInterval);
       clearInterval(intervalId);
-      setStatus('Paused.', null);
     }
   }
 
@@ -512,7 +667,7 @@
     try {
       await navigator.clipboard.writeText(text);
       exportBtn.textContent = 'Copied!';
-      setTimeout(() => (exportBtn.textContent = 'Copy list as text'), 1500);
+      setTimeout(() => (exportBtn.textContent = 'Copy list'), 1500);
     } catch (e) { /* clipboard unavailable */ }
   });
 
@@ -527,7 +682,7 @@
       enableMicBtn.textContent = 'Auto-listen enabled';
       enableMicBtn.disabled = true;
     } catch (e) {
-      setStatus('Microphone permission was denied.', null);
+      setStatus('Microphone permission was denied.', 'error');
     }
   });
 
@@ -540,13 +695,13 @@
       if (data.inClass) {
         if (!running) {
           await start(true, data.event);
-          if (running) setStatus(`Detected class: ${data.event.title} — listening automatically`, 'detected');
         }
       } else if (autoStarted && running) {
         stop();
         setStatus('Class ended — stopped listening.', null);
       } else if (!running) {
-        setStatus(data.event ? `Next class: ${data.event.title} at ${new Date(data.event.start).toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'})}` : 'No upcoming class detected on your calendars.', null);
+        if (data.event) showIdleNext(data.event);
+        else showIdleMessage("Auto-listen is on. It'll start on its own when a class begins.");
       }
     } catch (e) {
       // leave whatever status is currently shown
@@ -575,6 +730,7 @@
       chip.textContent = data[p] ? 'Connected' : 'Not connected';
       chip.classList.toggle('connected', !!data[p]);
       chip.classList.toggle('off', !data[p]);
+      document.getElementById(`dot-${p}`).classList.toggle('connected', !!data[p]);
       document.getElementById(`row-${p}-action`).innerHTML = providerActionHTML(p, data[p]);
     });
 
@@ -609,6 +765,7 @@
     chip.textContent = spotifyConnected ? 'Connected' : 'Not connected';
     chip.classList.toggle('connected', spotifyConnected);
     chip.classList.toggle('off', !spotifyConnected);
+    document.getElementById('dot-spotify').classList.toggle('connected', spotifyConnected);
     document.getElementById('row-spotify-action').innerHTML = spotifyConnected
       ? '<button class="link-btn danger" id="spotifyDisconnect">Disconnect</button>'
       : '<a href="/auth/spotify/login" target="_blank"><button class="link-btn">Connect</button></a>';
@@ -818,12 +975,11 @@
   const historySearchEl = document.getElementById('historySearch');
   let allSessions = [];
 
-  function fmtSessionMeta(session) {
+  function fmtSessionDate(session) {
     const started = new Date(session.startedAt);
     const dateStr = started.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
     const timeStr = started.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-    const count = session.tracks.length;
-    return `${dateStr}, ${timeStr} · ${count} track${count === 1 ? '' : 's'}`;
+    return `${dateStr} · ${timeStr}`;
   }
 
   function renderHistoryList(sessions, query) {
@@ -844,31 +1000,33 @@
       if (spotifyTrackUrls.length) {
         actionsHTML = spotifyConnected
           ? `<div class="session-actions"><button class="link-btn" data-playlist-session="${s.id}">Create Spotify playlist</button></div>`
-          : `<div class="session-actions"><span class="small-note">Connect <a href="#" class="connect-spotify-link">Spotify</a> in Settings to create a playlist from these songs.</span></div>`;
+          : `<div class="session-actions"><span class="small-note">Connect Spotify in <a href="#" class="connect-spotify-link">Settings</a> to create a playlist from these songs.</span></div>`;
       }
+
+      const count = s.tracks.length;
+      const countLabel = `${count} track${count === 1 ? '' : 's'}`;
 
       return `
       <div class="session-card">
-        <div class="session-head${trackMatch ? ' open' : ''}" data-idx="${i}" role="button" tabindex="0">
-          <div>
+        <div>
+          <div class="session-head${trackMatch ? ' open' : ''}" data-idx="${i}" role="button" tabindex="0">
             <div class="session-title">
               <span class="session-title-text">${escapeHtml(s.eventTitle)}</span>
-              <button class="session-edit-btn" type="button" data-edit-session="${s.id}" aria-label="Rename session">&#9998;</button>
+              <button class="session-edit-btn" type="button" data-edit-session="${s.id}" aria-label="Rename session">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              </button>
             </div>
-            <div class="session-meta">${fmtSessionMeta(s)}</div>
+            <span class="session-count${count === 0 ? ' zero' : ''}">${countLabel}</span>
+            <span class="session-caret">&#9662;</span>
           </div>
-          <span class="session-caret">&#9662;</span>
+          <div class="session-meta">${fmtSessionDate(s)}</div>
         </div>
         ${actionsHTML}
-        <div class="session-tracks" style="display:${trackMatch ? 'block' : 'none'};">
+        <div class="session-tracks" style="display:${trackMatch ? 'flex' : 'none'};">
           ${s.tracks.length ? s.tracks.map((t, j) => `
             <div class="session-track">
               <span class="session-track-num">${String(j + 1).padStart(2, '0')}</span>
-              <div class="track-info" style="flex:1;">
-                <div class="title">${escapeHtml(t.title)}</div>
-                <div class="artist">${escapeHtml(t.artist)}</div>
-                ${trackLinksHTML(t)}
-              </div>
+              <span class="title">${escapeHtml(t.title)} <span class="artist">${escapeHtml(t.artist)}</span></span>
             </div>
           `).join('') : '<div class="events-empty">Nothing was recognized during this session.</div>'}
         </div>
@@ -880,7 +1038,7 @@
       const toggle = () => {
         const body = head.closest('.session-card').querySelector('.session-tracks');
         const opening = body.style.display === 'none';
-        body.style.display = opening ? 'block' : 'none';
+        body.style.display = opening ? 'flex' : 'none';
         head.classList.toggle('open', opening);
       };
       head.addEventListener('click', (e) => {
@@ -923,20 +1081,24 @@
     input.type = 'text';
     input.value = session.eventTitle;
     input.className = 'session-title-input';
+    input.placeholder = `Leave blank for "${session.originalTitle || session.eventTitle}"`;
     titleEl.replaceWith(input);
     input.focus();
     input.select();
 
     const commit = async () => {
       const newTitle = input.value.trim();
-      if (newTitle && newTitle !== session.eventTitle) {
+      if (newTitle !== session.eventTitle) {
         try {
           const res = await fetch(`/api/sessions/${session.id}/rename`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ eventTitle: newTitle }),
           });
-          if (res.ok) session.eventTitle = newTitle;
+          if (res.ok) {
+            const updated = await res.json();
+            session.eventTitle = updated.eventTitle;
+          }
         } catch (e) { /* keep old title on failure */ }
       }
       applyHistoryView();

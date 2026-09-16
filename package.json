@@ -1,5 +1,5 @@
 {
-  "name": "calendar-class-app",
+  "name": "earshot",
   "version": "0.1.0",
   "description": "Detects a workout class on your calendar and automatically listens for songs during it.",
   "main": "server.js",

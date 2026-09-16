@@ -59,7 +59,7 @@ async function createPlaylist(refreshToken, name, trackUrls) {
 
   const playlist = await axios.post(
     `${API_BASE}/users/${userId}/playlists`,
-    { name, public: false, description: "Built by Class Tracklist" },
+    { name, public: false, description: "Built by Earshot" },
     { headers }
   );
 

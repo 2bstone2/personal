@@ -70,9 +70,11 @@ function setSelectedEvents(list) {
 function createSession({ eventTitle, eventSource, eventId }) {
   const db = load();
   if (!db.sessions) db.sessions = [];
+  const title = eventTitle || "Manual session";
   const session = {
     id: `session-${Date.now()}`,
-    eventTitle: eventTitle || "Manual session",
+    eventTitle: title,
+    originalTitle: title,
     eventSource: eventSource || null,
     eventId: eventId || null,
     startedAt: new Date().toISOString(),
@@ -93,11 +95,13 @@ function endSession(id) {
   return session;
 }
 
+// Blank eventTitle resets to the session's original calendar title.
 function renameSession(id, eventTitle) {
   const db = load();
   const session = (db.sessions || []).find((s) => s.id === id);
   if (!session) return null;
-  session.eventTitle = eventTitle;
+  const trimmed = (eventTitle || "").trim();
+  session.eventTitle = trimmed || session.originalTitle || session.eventTitle;
   save(db);
   return session;
 }
