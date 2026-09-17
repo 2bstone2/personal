@@ -94,25 +94,41 @@ Every session — auto-started or manual — is saved server-side in
 `data.json`. The **History** tab lists past sessions with a source tag
 (Google / iCloud / Manual), duration, and track count; tap one to see its
 tracklist with artwork and Spotify/Apple Music links wherever AudD returned
-them. The **⋯** menu on each session lets you rename it, reassign it to a
-different (or new) event, or delete it (with a confirmation prompt). A
-session with Spotify-linked tracks gets a **Create Spotify playlist**
-button; any session with tracks gets **Copy list** to copy the tracklist to
-your clipboard. History is stored on the server, not the browser, so it
-survives reloads — the in-progress list on Home does not.
+them. Each session has two icon menus:
+- **⋯ (event options)** — rename the session, reassign it to a different
+  (or new) event, or delete it entirely (with a confirmation prompt).
+- **♪ (song list options)**, shown when the session has at least one
+  track — **Copy list** (copies the tracklist to your clipboard), and if
+  Spotify is connected and the session has Spotify-linked tracks,
+  **Create Spotify playlist** (makes a new playlist from this session) and
+  **Add to Spotify playlist** (appends to one of your existing playlists).
+
+History is stored on the server, not the browser, so it survives reloads —
+the in-progress list on Home does not.
 
 **Home** also shows **Recently heard** — your last 5 recognized songs across
 all past sessions — so there's something to look at even when nothing is
 currently playing.
 
+## Liked songs
+
+Tap the heart on any song in History or Recently Heard to like it (filled
+pink = liked, outlined = not) — it's saved per-track server-side. The
+**Liked** tab collects every liked song across all your sessions in one
+place, with the same ♪ song list menu (Copy list / Create Spotify playlist /
+Add to Spotify playlist) scoped to just your liked tracks. Session/event
+names aren't shown there on purpose, since the same song could've been
+caught during more than one event.
+
 ## Picking specific events by hand
 
 Keywords won't catch everything — an event titled "Cardio Blast" won't match
-"hiit" unless you add "cardio" or "blast." The **Events** tab (labeled
-"Upcoming Events") lists everything on your connected calendars for the next
-7 days with a checkbox; check any of them to track it regardless of title.
-Events already caught by a keyword or location show as tracked with a
-locked, pre-checked box.
+"hiit" unless you add "cardio" or "blast." The **Events** tab lists
+everything on your connected calendars for the next 7 days with a checkbox;
+check any of them to track it regardless of title. Events already caught by
+a keyword or location show as tracked with a locked, pre-checked box.
+Manually created events can't be edited or deleted from the UI yet — you'd
+need to wait for them to age out of the 7-day window.
 
 ## Profile & Account
 
@@ -120,8 +136,23 @@ locked, pre-checked box.
 which also sets the initials shown on the profile icon. **Account** (split
 out from Settings) has app version info, data export, and clear-history.
 
+## When something's not working
+
+Earshot tries not to fail silently:
+- If song recognition keeps failing (e.g. a missing or invalid
+  `AUDD_API_TOKEN`), the error shows directly in the live "Listening…" view
+  instead of just quietly catching nothing.
+- If a connected calendar (Google, iCloud) starts failing to fetch — an
+  expired iCloud app-specific password, a revoked Google token — Settings
+  shows "Connection issue: `<reason>` — try reconnecting" under that
+  provider instead of its events just silently disappearing.
+
 ## Known limitations to know going in
 
+- **No login or accounts** — Earshot is single-user by design. There's one
+  `data.json` for everything; "My profile" is just a display name, not
+  authentication. Fine for one person running it locally; a real blocker the
+  moment more than one person needs their own data.
 - **Foreground only**, as above — a platform-level limit, not this app's.
 - **HTTPS required off localhost** for microphone access on a real phone —
   deploy behind HTTPS (Render, Railway, etc.) for anything beyond local

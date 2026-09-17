@@ -42,6 +42,10 @@
   .content-block { padding: 0 22px 26px; display: flex; flex-direction: column; gap: 14px; }
 
   .screen-title { font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: 30px; line-height: 1; letter-spacing: -0.02em; text-transform: uppercase; margin: 0; }
+  .screen-title::after {
+    content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--live); margin-left: 4px; margin-bottom: 3px; vertical-align: bottom;
+  }
   .sub { color: var(--text-muted); font-size: 13px; line-height: 1.55; }
 
   /* brand mark + wordmark */
@@ -113,19 +117,21 @@
     transition: width 120ms ease, margin-right 120ms ease;
   }
   .tab-btn.active .pill-dot, .tab-btn:hover .pill-dot { width: 6px; margin-right: 7px; }
+  .pill-dot-heart { height: 12px; background: none; border-radius: 0; }
+  .pill-dot-heart svg { width: 12px; height: 12px; fill: var(--live); display: block; }
+  .tab-btn.active .pill-dot-heart, .tab-btn:hover .pill-dot-heart { width: 12px; margin-right: 6px; }
   .tab-panel[hidden] { display: none; }
 
   /* live session line / idle block */
   .live-session-line { align-items: center; justify-content: space-between; gap: 8px; }
   .live-session-line:not([hidden]) { display: flex; }
-  .live-session-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); flex-shrink: 0; }
   #liveSessionText { font-size: 13px; font-weight: 700; }
   .idle-empty { flex-direction: column; gap: 8px; padding: 24px 0 0; border-top: 1px solid var(--card-hairline); }
   .home-divider { border-top: 1px solid var(--card-hairline); }
   .idle-empty:not([hidden]) { display: flex; }
   .idle-heading { font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: 22px; letter-spacing: -0.01em; text-transform: uppercase; color: var(--secondary); }
   .idle-sub { font-size: 13px; line-height: 1.55; color: var(--text-muted); }
-  .idle-sub.is-error { color: var(--danger); }
+  .is-error { color: var(--danger); }
   .next-up { flex-direction: column; gap: 4px; }
   .next-up:not([hidden]) { display: flex; }
   .next-up-label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--secondary); text-transform: uppercase; }
@@ -140,7 +146,7 @@
   .col-header { justify-content: space-between; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--accent); text-transform: uppercase; }
   .col-header:not([hidden]) { display: flex; }
 
-  #list, #recentlyHeardList { display: flex; flex-direction: column; gap: 8px; }
+  #list, #recentlyHeardList, #likedList { display: flex; flex-direction: column; gap: 8px; }
   .track { background: var(--card); border-radius: var(--radius-md); padding: 14px; display: flex; gap: 12px; align-items: center; }
   .track-num { font-family: var(--font-mono); font-size: 11px; color: var(--accent); width: 18px; flex-shrink: 0; }
   .track-art { width: 40px; height: 40px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; background: var(--field-deep); }
@@ -179,19 +185,18 @@
   .actions-row { display: flex; gap: 8px; }
 
   button { font-family: inherit; }
-  button.primary, button.start, button.stop, button.link-btn, .export {
+  button.primary, button.start, button.stop, button.link-btn {
     align-items: center; justify-content: center; gap: 0;
     font-family: var(--font-body); font-weight: 700; cursor: pointer;
     transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
   }
   button.primary:not([hidden]), button.start:not([hidden]), button.stop:not([hidden]),
-  button.link-btn:not([hidden]), .export:not([hidden]) { display: inline-flex; }
-  button.primary, .export, button.start {
+  button.link-btn:not([hidden]) { display: inline-flex; }
+  button.primary, button.start {
     background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-pill);
     padding: 14px; font-size: 13px;
   }
-  .export { flex: 1; }
-  button.primary:hover, .export:hover { background: var(--accent-hover); }
+  button.primary:hover { background: var(--accent-hover); }
   button.start { padding: 16px 24px; font-size: 14px; flex: 1; box-shadow: 0 6px 18px rgba(171, 223, 83, 0.22); }
   button.stop, button.link-btn {
     background: none; border: 1px solid var(--outline); color: var(--text); border-radius: var(--radius-pill);
@@ -201,12 +206,12 @@
   button.stop:hover { border-color: var(--live); color: var(--live); }
   button.link-btn:hover { border-color: var(--accent); color: var(--accent); }
   button.link-btn.danger { border-color: var(--danger); color: var(--danger); }
-  button.primary::before, button.start::before, button.stop::before, button.link-btn::before, .export::before {
+  button.primary::before, button.start::before, button.stop::before, button.link-btn::before {
     content: ''; width: 0; height: 6px; border-radius: 50%; background: var(--live); flex-shrink: 0;
     overflow: hidden; transition: width 120ms ease, margin-right 120ms ease;
   }
   button.primary:hover::before, button.start:hover::before, button.stop:hover::before,
-  button.link-btn:hover::before, .export:hover::before { width: 6px; margin-right: 7px; }
+  button.link-btn:hover::before { width: 6px; margin-right: 7px; }
   button:disabled { background: var(--card) !important; color: var(--text-faint) !important; border-color: transparent !important; cursor: default; }
   button:disabled::before { display: none; }
 
@@ -231,6 +236,14 @@
   }
   input::placeholder { color: var(--text-faint); }
   input:focus-visible { outline: none; border-color: var(--live); }
+  .search-input-wrap { position: relative; }
+  .search-input-wrap input { padding-right: 40px; }
+  .search-btn {
+    position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; padding: 6px;
+    display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+  }
+  .search-btn:hover { color: var(--accent); }
   .apple-form { display: none; flex-direction: column; gap: 8px; }
   .apple-form.open { display: flex; }
   .add-event-form { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
@@ -288,8 +301,8 @@
   }
   .event-row input[type=checkbox]:checked { background: var(--accent); border-color: var(--accent); }
   .event-row input[type=checkbox]:checked::after {
-    content: '✓'; color: var(--on-accent); font-size: 11px; font-weight: 700;
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231F2B06' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E");
+    position: absolute; inset: 0; width: 12px; height: 12px; margin: auto;
   }
   .event-row input[type=checkbox]:disabled { cursor: default; }
   .event-title { font-size: 14px; font-weight: 700; }
@@ -309,7 +322,7 @@
   }
   .session-head.open .session-caret { transform: rotate(180deg); }
   .session-title { font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
-  .session-edit-btn { background: none; border: none; color: var(--text-faint); cursor: pointer; padding: 2px 4px; display: inline-flex; align-items: center; }
+  .session-edit-btn { background: none; border: none; color: var(--text-faint); cursor: pointer; padding: 2px 4px; display: inline-flex; align-items: center; align-self: center; }
   .session-edit-btn:hover { color: var(--live); }
   .session-title-input {
     font-size: 15px; font-weight: 700; font-family: var(--font-body); color: var(--text);
@@ -347,7 +360,7 @@
         <div class="brand-word"><span class="brand-word-text">Earshot</span><span class="brand-period"></span></div>
       </div>
       <div class="profile-menu-wrap">
-        <button class="profile-btn" id="profileBtn" type="button" aria-label="Profile menu">
+        <button class="profile-btn" id="profileBtn" type="button" aria-label="Profile menu" title="Profile menu">
           <svg id="profileBtnIcon" viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.5c-3.3 0-9.8 1.6-9.8 4.9v2.4h19.6v-2.4c0-3.3-6.5-4.9-9.8-4.9z"/></svg>
           <span id="profileBtnInitial" hidden></span>
         </button>
@@ -364,7 +377,7 @@
       <button class="tab-btn active" data-tab="home"><span class="pill-dot"></span>Home</button>
       <button class="tab-btn" data-tab="events"><span class="pill-dot"></span>Events</button>
       <button class="tab-btn" data-tab="history"><span class="pill-dot"></span>History</button>
-      <button class="tab-btn" data-tab="liked"><span class="pill-dot"></span>Liked</button>
+      <button class="tab-btn" data-tab="liked"><span class="pill-dot pill-dot-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.7-4.35-9.5-8.28C.86 10.42 1 7.3 3.4 5.6c2.02-1.43 4.6-.98 6.1.9L12 9.2l2.5-2.7c1.5-1.88 4.08-2.33 6.1-.9 2.4 1.7 2.54 4.82.9 7.12C18.7 16.65 12 21 12 21z"/></svg></span>Liked</button>
     </nav>
   </div>
 
@@ -375,6 +388,7 @@
     </div>
     <div class="idle-empty" id="liveArea" hidden>
       <div class="idle-heading">Listening…</div>
+      <div class="idle-sub is-error" id="liveError" hidden></div>
     </div>
     <div class="idle-empty" id="idleArea">
       <div class="idle-heading" id="idleHeading">Waiting to listen…</div>
@@ -426,9 +440,14 @@
   </section>
 
   <section class="tab-panel content-block" id="tab-events" hidden>
-    <h1 class="screen-title">Upcoming Events</h1>
+    <h1 class="screen-title">Events</h1>
     <div class="small-note">Showing the next 7 days. Tracked events trigger auto-listening — by keyword anywhere in the title, location, or description, or by a location that looks like a gym or studio. Check an untracked event to include it anyway.</div>
-    <input type="text" id="eventsSearch" placeholder="Search events…" />
+    <div class="search-input-wrap">
+      <input type="text" id="eventsSearch" placeholder="Search upcoming events…" />
+      <button class="search-btn" type="button" id="eventsSearchBtn" aria-label="Search" title="Search">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
     <div id="eventsList"></div>
     <button class="link-btn" id="addEventToggle" type="button">+ Add event</button>
     <div class="add-event-form" id="addEventForm" hidden>
@@ -444,20 +463,13 @@
   <section class="tab-panel content-block" id="tab-history" hidden>
     <h1 class="screen-title">History</h1>
     <div class="history-toolbar">
-      <input type="text" id="historySearch" class="history-search" placeholder="Search sessions or songs…" />
+      <div class="search-input-wrap">
+        <input type="text" id="historySearch" class="history-search" placeholder="Search sessions or songs…" />
+        <button class="search-btn" type="button" id="historySearchBtn" aria-label="Search" title="Search">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </div>
       <div class="history-filters">
-        <div class="dropdown-wrap">
-          <button type="button" class="dropdown-btn" id="historyFilterBtn" aria-haspopup="true" aria-expanded="false">
-            <span id="historyFilterLabel">All calendars</span><span class="select-caret"></span>
-          </button>
-          <div class="profile-menu" id="historyFilterMenu" hidden>
-            <button type="button" data-value="all"><span class="pill-dot"></span>All calendars</button>
-            <button type="button" data-value="google"><span class="pill-dot"></span>Google</button>
-            <button type="button" data-value="microsoft"><span class="pill-dot"></span>Outlook</button>
-            <button type="button" data-value="apple"><span class="pill-dot"></span>iCloud</button>
-            <button type="button" data-value="manual"><span class="pill-dot"></span>Manual</button>
-          </div>
-        </div>
         <div class="dropdown-wrap">
           <button type="button" class="dropdown-btn" id="historySortBtn" aria-haspopup="true" aria-expanded="false">
             <span id="historySortLabel">Newest first</span><span class="select-caret"></span>
@@ -479,7 +491,7 @@
   <section class="tab-panel content-block" id="tab-liked" hidden>
     <div class="row" style="align-items: flex-start;">
       <h1 class="screen-title">Liked</h1>
-      <button class="session-edit-btn" type="button" id="likedTrackMenuBtn" aria-label="Song list options" hidden>
+      <button class="session-edit-btn" type="button" id="likedTrackMenuBtn" aria-label="Song list options" title="Song list options" hidden>
         <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
       </button>
     </div>
@@ -499,6 +511,7 @@
               <div class="row-action" id="row-google-action"></div>
             </div>
           </div>
+          <div class="small-note is-error" id="error-google" hidden></div>
         </div>
         <div class="provider-block">
           <div class="row">
@@ -507,6 +520,7 @@
               <div class="row-action" id="row-apple-action"></div>
             </div>
           </div>
+          <div class="small-note is-error" id="error-apple" hidden></div>
           <div class="apple-form" id="appleForm">
             <input type="email" id="appleEmail" placeholder="Apple ID email" />
             <input type="password" id="applePassword" placeholder="App-specific password" />
@@ -545,7 +559,10 @@
         <div class="section-label">Event keywords</div>
         <div class="tag-list" id="tagList"></div>
         <div class="tag-input-wrap">
-          <input type="text" id="tagSearchInput" placeholder="Search or type your own…" autocomplete="off" />
+          <input type="text" id="tagSearchInput" placeholder="Search or type your own…" autocomplete="off" style="padding-right: 40px;" />
+          <button class="search-btn" type="button" id="tagSearchBtn" aria-label="Search" title="Search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
           <div class="tag-suggestions" id="tagSuggestions" hidden></div>
         </div>
         <div class="small-note">An event title matching any of these will trigger auto-listening — so will a location that looks like a gym or studio.</div>
@@ -572,11 +589,11 @@
         <div class="section-label">Basic info</div>
         <div class="provider-block">
           <label class="small-note" for="profileFirstNameInput">First name</label>
-          <input type="text" id="profileFirstNameInput" placeholder="First name" style="margin-top: 6px;" />
+          <input type="text" id="profileFirstNameInput" placeholder="First name" autocomplete="given-name" data-lpignore="true" data-1p-ignore data-bwignore style="margin-top: 6px;" />
         </div>
         <div class="provider-block">
           <label class="small-note" for="profileLastNameInput">Last name</label>
-          <input type="text" id="profileLastNameInput" placeholder="Last name" style="margin-top: 6px;" />
+          <input type="text" id="profileLastNameInput" placeholder="Last name" autocomplete="family-name" data-lpignore="true" data-1p-ignore data-bwignore style="margin-top: 6px;" />
         </div>
         <div class="actions-row">
           <button class="link-btn" id="saveProfileBtn">Save</button>
@@ -654,6 +671,7 @@
   let trackSortOrder = 'newest';
   const liveSessionLine = document.getElementById('liveSessionLine');
   const liveArea = document.getElementById('liveArea');
+  const liveError = document.getElementById('liveError');
   const liveSessionText = document.getElementById('liveSessionText');
   const idleArea = document.getElementById('idleArea');
   const idleHeading = document.getElementById('idleHeading');
@@ -827,7 +845,7 @@
   }
 
   function likeButtonHTML(sessionId, index, liked) {
-    return `<button class="like-btn${liked ? ' liked' : ''}" type="button" data-like-session="${sessionId}" data-like-index="${index}" aria-label="${liked ? 'Unlike' : 'Like'}">
+    return `<button class="like-btn${liked ? ' liked' : ''}" type="button" data-like-session="${sessionId}" data-like-index="${index}" aria-label="${liked ? 'Unlike' : 'Like'}" title="${liked ? 'Unlike' : 'Like'}">
       <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 21s-6.7-4.35-9.5-8.28C.86 10.42 1 7.3 3.4 5.6c2.02-1.43 4.6-.98 6.1.9L12 9.2l2.5-2.7c1.5-1.88 4.08-2.33 6.1-.9 2.4 1.7 2.54 4.82.9 7.12C18.7 16.65 12 21 12 21z"/></svg>
     </button>`;
   }
@@ -874,6 +892,13 @@
     try {
       const res = await fetch('/api/recognize', { method: 'POST', body: form });
       const data = await res.json();
+      if (!res.ok) {
+        console.error('Recognition failed:', data.error);
+        liveError.textContent = data.error || 'Recognition failed.';
+        liveError.hidden = false;
+        return;
+      }
+      liveError.hidden = true;
       if (data.matched && !isDuplicate(data.title, data.artist)) {
         tracks.unshift({
           title: data.title,
@@ -885,7 +910,9 @@
         });
         renderTracks();
       }
-    } catch (e) { /* skip a failed capture, next one will try again */ }
+    } catch (e) {
+      // network-level failure (offline, etc) — leave any existing error message as-is and retry next capture
+    }
   }
 
   async function start(auto, event) {
@@ -897,6 +924,7 @@
     }
     running = true;
     autoStarted = !!auto;
+    liveError.hidden = true;
     tracks = [];
     renderTracks();
     try {
@@ -1047,7 +1075,7 @@
           ${trackArtHTML(t, 'track-art')}
           <div class="track-info">
             <div class="title">${escapeHtml(t.title)}</div>
-            <div class="artist">${escapeHtml(t.artist)} · ${escapeHtml(t.sessionTitle)}</div>
+            <div class="artist">${escapeHtml(t.artist)}</div>
           </div>
           ${likeButtonHTML(t.sessionId, t.trackIndex, true)}
         </div>
@@ -1208,6 +1236,10 @@
       chip.classList.remove('off');
       document.getElementById(`dot-${p}`).classList.toggle('connected', !!data[p]);
       document.getElementById(`row-${p}-action`).innerHTML = providerActionHTML(p, data[p]);
+      const errorEl = document.getElementById(`error-${p}`);
+      const errorKey = `${p}Error`;
+      errorEl.hidden = !data[errorKey];
+      errorEl.textContent = data[errorKey] ? `Connection issue: ${data[errorKey]} — try reconnecting.` : '';
     });
 
     document.querySelectorAll('[data-disconnect]').forEach((btn) => {
@@ -1288,7 +1320,7 @@
     tagList.innerHTML = keywordTags.map((kw) => `
       <span class="tag-chip">
         ${escapeHtml(kw)}
-        <button type="button" data-remove="${escapeHtml(kw)}" aria-label="Remove ${escapeHtml(kw)}">&times;</button>
+        <button type="button" data-remove="${escapeHtml(kw)}" aria-label="Remove ${escapeHtml(kw)}" title="Remove ${escapeHtml(kw)}">&times;</button>
       </span>
     `).join('');
     tagList.querySelectorAll('[data-remove]').forEach((btn) => {
@@ -1336,6 +1368,10 @@
 
   tagSearchInput.addEventListener('focus', () => renderSuggestions(tagSearchInput.value));
   tagSearchInput.addEventListener('input', () => renderSuggestions(tagSearchInput.value));
+  document.getElementById('tagSearchBtn').addEventListener('click', () => {
+    renderSuggestions(tagSearchInput.value);
+    tagSearchInput.focus();
+  });
   tagSearchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -1447,6 +1483,7 @@
   }
 
   document.getElementById('eventsSearch').addEventListener('input', renderEventsList);
+  document.getElementById('eventsSearchBtn').addEventListener('click', renderEventsList);
 
   function eventRowHTML(e) {
     const key = `${e.source}:${e.id}`;
@@ -1511,13 +1548,9 @@
 
   const historyList = document.getElementById('historyList');
   const historyEmpty = document.getElementById('historyEmpty');
-  const historyFilterBtn = document.getElementById('historyFilterBtn');
-  const historyFilterMenu = document.getElementById('historyFilterMenu');
-  const historyFilterLabel = document.getElementById('historyFilterLabel');
   const historySortBtn = document.getElementById('historySortBtn');
   const historySortMenu = document.getElementById('historySortMenu');
   const historySortLabel = document.getElementById('historySortLabel');
-  let historyFilterValue = 'all';
   let historySortValue = 'newest';
   const historySearchEl = document.getElementById('historySearch');
   let allSessions = [];
@@ -1560,13 +1593,13 @@
           <div class="session-head${trackMatch ? ' open' : ''}${count === 0 ? ' no-toggle' : ''}" data-idx="${i}" role="button" tabindex="${count === 0 ? -1 : 0}">
             <div class="session-title">
               <span class="session-title-text">${escapeHtml(s.eventTitle)}</span>
-              <button class="session-edit-btn" type="button" data-session-menu="${s.id}" aria-label="Event options">
+              <button class="session-edit-btn" type="button" data-session-menu="${s.id}" aria-label="Event options" title="Event options">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/></svg>
               </button>
-              ${count > 0 ? `<button class="session-edit-btn" type="button" data-track-menu="${s.id}" aria-label="Song list options">
-                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
-              </button>` : ''}
             </div>
+            ${count > 0 ? `<button class="session-edit-btn" type="button" data-track-menu="${s.id}" aria-label="Song list options" title="Song list options">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            </button>` : ''}
             <span class="session-count${count === 0 ? ' zero' : ''}">${countLabel}</span>
             ${count > 0 ? '<span class="session-caret"></span>' : ''}
           </div>
@@ -1883,13 +1916,10 @@
   }
 
   function applyHistoryView() {
-    const filter = historyFilterValue;
     const sort = historySortValue;
     const query = historySearchEl.value.trim().toLowerCase();
 
     let sessions = allSessions.filter((s) => {
-      const isManualSession = !s.eventSource || s.eventSource === 'manual';
-      if (filter === 'manual' ? !isManualSession : filter !== 'all' && s.eventSource !== filter) return false;
       if (!query) return true;
       const titleMatch = s.eventTitle.toLowerCase().includes(query);
       const trackMatch = s.tracks.some((t) =>
@@ -1924,10 +1954,10 @@
     });
   }
 
-  setupDropdown(historyFilterBtn, historyFilterMenu, historyFilterLabel, (v) => { historyFilterValue = v; applyHistoryView(); });
   setupDropdown(historySortBtn, historySortMenu, historySortLabel, (v) => { historySortValue = v; applyHistoryView(); });
   setupDropdown(trackSortBtn, trackSortMenu, trackSortLabel, (v) => { trackSortOrder = v; renderTracks(); });
   historySearchEl.addEventListener('input', applyHistoryView);
+  document.getElementById('historySearchBtn').addEventListener('click', applyHistoryView);
 
   async function loadHistory() {
     try {

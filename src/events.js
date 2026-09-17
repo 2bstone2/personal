@@ -10,23 +10,28 @@ function getManualEventsInRange(startIso, endIso) {
     .map((e) => ({ id: e.id, title: e.title, location: null, start: e.start, end: e.end, source: "manual" }));
 }
 
+// Fetches one provider's events and records the failure (or clears a
+// previous one) on its stored connection, so a broken connection shows up
+// in the UI instead of just disappearing from the calendar silently.
+async function fetchProviderEvents(name, fn) {
+  const conn = store.getProvider(name);
+  if (!conn) return [];
+  try {
+    const events = await fn(conn);
+    if (conn.lastError) store.setProvider(name, { ...conn, lastError: null });
+    return events;
+  } catch (err) {
+    const message = err.response?.data?.error?.message || err.message || "Connection failed";
+    store.setProvider(name, { ...conn, lastError: message });
+    throw err;
+  }
+}
+
 async function getAllEvents(startIso, endIso) {
   const results = await Promise.allSettled([
-    (async () => {
-      const conn = store.getProvider("google");
-      if (!conn) return [];
-      return google.listEvents(conn.refreshToken, startIso, endIso);
-    })(),
-    (async () => {
-      const conn = store.getProvider("microsoft");
-      if (!conn) return [];
-      return microsoft.listEvents(conn.refreshToken, startIso, endIso);
-    })(),
-    (async () => {
-      const conn = store.getProvider("apple");
-      if (!conn) return [];
-      return apple.listEvents(conn.username, conn.appPassword, startIso, endIso);
-    })(),
+    fetchProviderEvents("google", (conn) => google.listEvents(conn.refreshToken, startIso, endIso)),
+    fetchProviderEvents("microsoft", (conn) => microsoft.listEvents(conn.refreshToken, startIso, endIso)),
+    fetchProviderEvents("apple", (conn) => apple.listEvents(conn.username, conn.appPassword, startIso, endIso)),
   ]);
 
   const events = [];

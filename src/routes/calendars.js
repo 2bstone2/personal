@@ -42,10 +42,16 @@ router.delete("/api/calendars/manual-events/:id", (req, res) => {
 });
 
 router.get("/api/calendars/status", (req, res) => {
+  const google = store.getProvider("google");
+  const microsoft = store.getProvider("microsoft");
+  const apple = store.getProvider("apple");
   res.json({
-    google: !!store.getProvider("google"),
-    microsoft: !!store.getProvider("microsoft"),
-    apple: !!store.getProvider("apple"),
+    google: !!google,
+    googleError: google?.lastError || null,
+    microsoft: !!microsoft,
+    microsoftError: microsoft?.lastError || null,
+    apple: !!apple,
+    appleError: apple?.lastError || null,
     keywords: store.getKeywords(),
   });
 });
