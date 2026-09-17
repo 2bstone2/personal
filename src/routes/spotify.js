@@ -43,4 +43,31 @@ router.post("/api/spotify/playlist", async (req, res) => {
   }
 });
 
+router.get("/api/spotify/playlists", async (req, res) => {
+  const conn = store.getProvider("spotify");
+  if (!conn) return res.status(400).json({ error: "Spotify isn't connected." });
+  try {
+    const playlists = await spotify.listPlaylists(conn.refreshToken);
+    res.json(playlists);
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    res.status(500).json({ error: "Couldn't load your Spotify playlists." });
+  }
+});
+
+// Body: { trackUrls: ["https://open.spotify.com/track/...", ...] }
+router.post("/api/spotify/playlists/:id/tracks", async (req, res) => {
+  const conn = store.getProvider("spotify");
+  if (!conn) return res.status(400).json({ error: "Spotify isn't connected." });
+  const { trackUrls } = req.body;
+  if (!Array.isArray(trackUrls)) return res.status(400).json({ error: "trackUrls is required" });
+  try {
+    const result = await spotify.addTracksToPlaylist(conn.refreshToken, req.params.id, trackUrls);
+    res.json(result);
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    res.status(500).json({ error: "Couldn't add tracks to that playlist." });
+  }
+});
+
 module.exports = router;

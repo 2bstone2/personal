@@ -46,4 +46,14 @@ router.delete("/api/sessions/:id", (req, res) => {
   res.json({ removed: true });
 });
 
+router.post("/api/sessions/:id/tracks/:index/like", (req, res) => {
+  const track = store.toggleTrackLiked(req.params.id, Number(req.params.index));
+  if (!track) return res.status(404).json({ error: "Track not found." });
+  res.json(track);
+});
+
+router.get("/api/liked-tracks", (req, res) => {
+  res.json(store.getLikedTracks());
+});
+
 module.exports = router;

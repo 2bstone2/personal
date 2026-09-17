@@ -321,12 +321,14 @@
   .session-meta { font-family: var(--font-mono); color: var(--text-muted); font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
   .session-duration.is-live { color: var(--live); font-weight: 700; }
   #linkEventMenu { max-height: 260px; overflow-y: auto; }
-  .session-actions { border-top: 1px solid var(--card-hairline); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
   .session-tracks { border-top: 1px solid var(--card-hairline); padding-top: 4px; display: flex; flex-direction: column; }
   .session-track { display: flex; gap: 12px; padding: 9px 0; align-items: center; }
   .session-track-num { font-family: var(--font-mono); color: var(--accent); font-size: 11px; width: 18px; flex-shrink: 0; }
   .session-track .title { font-size: 13px; font-weight: 700; }
   .session-track .artist { font-size: 13px; font-weight: 400; color: var(--text-muted); }
+  .like-btn { background: none; border: none; cursor: pointer; padding: 2px; display: inline-flex; align-items: center; margin-left: auto; flex-shrink: 0; }
+  .like-btn svg { fill: none; stroke: var(--live); stroke-width: 1.8; transition: fill 120ms ease; }
+  .like-btn.liked svg { fill: var(--live); }
 
   .modal-overlay { position: fixed; inset: 0; background: rgba(10, 8, 24, 0.6); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
   .modal-overlay[hidden] { display: none; }
@@ -362,6 +364,7 @@
       <button class="tab-btn active" data-tab="home"><span class="pill-dot"></span>Home</button>
       <button class="tab-btn" data-tab="events"><span class="pill-dot"></span>Events</button>
       <button class="tab-btn" data-tab="history"><span class="pill-dot"></span>History</button>
+      <button class="tab-btn" data-tab="liked"><span class="pill-dot"></span>Liked</button>
     </nav>
   </div>
 
@@ -471,6 +474,17 @@
     <div id="historyList"></div>
     <div class="empty" id="historyEmpty">No past sessions yet.</div>
     <div class="profile-menu" id="linkEventMenu" hidden style="position: fixed; right: auto;"></div>
+  </section>
+
+  <section class="tab-panel content-block" id="tab-liked" hidden>
+    <div class="row" style="align-items: flex-start;">
+      <h1 class="screen-title">Liked</h1>
+      <button class="session-edit-btn" type="button" id="likedTrackMenuBtn" aria-label="Song list options" hidden>
+        <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+      </button>
+    </div>
+    <div id="likedList"></div>
+    <div class="empty" id="likedEmpty" hidden>No liked songs yet — tap the heart on any song in History.</div>
   </section>
 
   <section class="tab-panel content-block" id="tab-settings" hidden>
@@ -603,6 +617,7 @@
 </div>
 
 <div class="profile-menu" id="sessionMenu" hidden style="position: fixed; right: auto;"></div>
+<div class="profile-menu" id="trackMenu" hidden style="position: fixed; right: auto; max-height: 260px; overflow-y: auto;"></div>
 
 <div class="modal-overlay" id="confirmModalOverlay" hidden>
   <div class="modal-card">
@@ -675,6 +690,7 @@
     home: document.getElementById('tab-home'),
     events: document.getElementById('tab-events'),
     history: document.getElementById('tab-history'),
+    liked: document.getElementById('tab-liked'),
     settings: document.getElementById('tab-settings'),
     profile: document.getElementById('tab-profile'),
     account: document.getElementById('tab-account'),
@@ -690,7 +706,10 @@
   }
 
   tabButtons.forEach((btn) => {
-    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    btn.addEventListener('click', () => {
+      switchTab(btn.dataset.tab);
+      if (btn.dataset.tab === 'liked') loadLikedSongs();
+    });
   });
 
   // ---- live tag / idle block ----
@@ -805,6 +824,12 @@
       </div>
     `;
     }).join('');
+  }
+
+  function likeButtonHTML(sessionId, index, liked) {
+    return `<button class="like-btn${liked ? ' liked' : ''}" type="button" data-like-session="${sessionId}" data-like-index="${index}" aria-label="${liked ? 'Unlike' : 'Like'}">
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 21s-6.7-4.35-9.5-8.28C.86 10.42 1 7.3 3.4 5.6c2.02-1.43 4.6-.98 6.1.9L12 9.2l2.5-2.7c1.5-1.88 4.08-2.33 6.1-.9 2.4 1.7 2.54 4.82.9 7.12C18.7 16.65 12 21 12 21z"/></svg>
+    </button>`;
   }
 
   function trackArtHTML(t, sizeClass) {
@@ -972,7 +997,9 @@
       const res = await fetch('/api/sessions?limit=10');
       const sessions = await res.json();
       const recent = [];
-      sessions.forEach((s) => s.tracks.forEach((t) => recent.push({ ...t, sessionTitle: s.eventTitle, playedAt: t.playedAt || s.startedAt })));
+      sessions.forEach((s) => s.tracks.forEach((t, idx) => recent.push({
+        ...t, sessionId: s.id, trackIndex: idx, sessionTitle: s.eventTitle, playedAt: t.playedAt || s.startedAt,
+      })));
       recent.sort((a, b) => new Date(b.playedAt) - new Date(a.playedAt));
       const top = recent.slice(0, 5);
       if (!top.length) { section.hidden = true; return; }
@@ -985,10 +1012,66 @@
             <div class="artist">${escapeHtml(t.artist)} · ${escapeHtml(t.sessionTitle)}</div>
           </div>
           <div class="track-time">${fmtHeardAt(t.playedAt)}</div>
+          ${likeButtonHTML(t.sessionId, t.trackIndex, t.liked)}
         </div>
       `).join('');
+      list.querySelectorAll('[data-like-session]').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const track = await toggleLike(btn.dataset.likeSession, btn.dataset.likeIndex);
+          if (track) btn.classList.toggle('liked', !!track.liked);
+        });
+      });
     } catch (e) { section.hidden = true; }
   }
+
+  async function loadLikedSongs() {
+    const list = document.getElementById('likedList');
+    const empty = document.getElementById('likedEmpty');
+    const menuBtn = document.getElementById('likedTrackMenuBtn');
+    try {
+      const res = await fetch('/api/liked-tracks');
+      const liked = await res.json();
+      likedTracksCache = liked;
+      if (!liked.length) {
+        empty.hidden = false;
+        empty.textContent = 'No liked songs yet — tap the heart on any song in History.';
+        list.innerHTML = '';
+        menuBtn.hidden = true;
+        return;
+      }
+      empty.hidden = true;
+      menuBtn.hidden = false;
+      list.innerHTML = liked.map((t) => `
+        <div class="track">
+          ${trackArtHTML(t, 'track-art')}
+          <div class="track-info">
+            <div class="title">${escapeHtml(t.title)}</div>
+            <div class="artist">${escapeHtml(t.artist)} · ${escapeHtml(t.sessionTitle)}</div>
+          </div>
+          ${likeButtonHTML(t.sessionId, t.trackIndex, true)}
+        </div>
+      `).join('');
+      list.querySelectorAll('[data-like-session]').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          await toggleLike(btn.dataset.likeSession, btn.dataset.likeIndex);
+          loadLikedSongs();
+        });
+      });
+    } catch (e) {
+      empty.hidden = false;
+      empty.textContent = "Couldn't load liked songs.";
+      list.innerHTML = '';
+      menuBtn.hidden = true;
+    }
+  }
+
+  let likedTracksCache = [];
+  document.getElementById('likedTrackMenuBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    showTrackMenu(e.currentTarget, { eventTitle: 'Liked Songs', tracks: likedTracksCache });
+  });
 
   startStopBtn.addEventListener('click', () => {
     if (!running) return start(false);
@@ -1467,22 +1550,7 @@
       const trackMatch = query && !titleMatch && s.tracks.some((t) =>
         t.title.toLowerCase().includes(query) || t.artist.toLowerCase().includes(query));
 
-      const spotifyTrackUrls = s.tracks.filter((t) => t.spotifyUrl).map((t) => t.spotifyUrl);
       const sourceLabel = s.eventSource === 'google' ? 'Google' : s.eventSource === 'apple' ? 'iCloud' : 'Manual';
-      const actionsDisplay = trackMatch ? 'flex' : 'none';
-      const actionRows = [];
-      if (spotifyTrackUrls.length) {
-        actionRows.push(spotifyConnected
-          ? `<button class="link-btn" data-playlist-session="${s.id}">Create Spotify playlist</button>`
-          : `<span class="small-note">Connect Spotify in <a href="#" class="connect-spotify-link">Settings</a> to create a playlist from these songs.</span>`);
-      }
-      if (s.tracks.length) {
-        actionRows.push(`<button class="link-btn" data-copy-session="${s.id}">Copy list</button>`);
-      }
-      const actionsHTML = actionRows.length
-        ? `<div class="session-actions" style="display:${actionsDisplay};">${actionRows.join('')}</div>`
-        : '';
-
       const count = s.tracks.length;
       const countLabel = `${count} track${count === 1 ? '' : 's'}`;
 
@@ -1492,22 +1560,25 @@
           <div class="session-head${trackMatch ? ' open' : ''}${count === 0 ? ' no-toggle' : ''}" data-idx="${i}" role="button" tabindex="${count === 0 ? -1 : 0}">
             <div class="session-title">
               <span class="session-title-text">${escapeHtml(s.eventTitle)}</span>
-              <button class="session-edit-btn" type="button" data-session-menu="${s.id}" aria-label="Session options">
+              <button class="session-edit-btn" type="button" data-session-menu="${s.id}" aria-label="Event options">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/></svg>
               </button>
+              ${count > 0 ? `<button class="session-edit-btn" type="button" data-track-menu="${s.id}" aria-label="Song list options">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+              </button>` : ''}
             </div>
             <span class="session-count${count === 0 ? ' zero' : ''}">${countLabel}</span>
             ${count > 0 ? '<span class="session-caret"></span>' : ''}
           </div>
           <div class="session-meta">${sourceLabel} · ${fmtSessionDate(s)} · <span class="session-duration${s.endedAt ? '' : ' is-live'}">${fmtSessionDuration(s)}</span></div>
         </div>
-        ${actionsHTML}
         <div class="session-tracks" style="display:${trackMatch ? 'flex' : 'none'};">
           ${s.tracks.length ? s.tracks.map((t, j) => `
             <div class="session-track">
               <span class="session-track-num">${String(j + 1).padStart(2, '0')}</span>
               ${trackArtHTML(t, 'session-track-art')}
               <span class="title">${escapeHtml(t.title)} <span class="artist">${escapeHtml(t.artist)}</span></span>
+              ${likeButtonHTML(s.id, j, t.liked)}
             </div>
           `).join('') : '<div class="events-empty">Nothing was recognized during this session.</div>'}
         </div>
@@ -1519,15 +1590,13 @@
       const toggle = () => {
         const card = head.closest('.session-card');
         const body = card.querySelector('.session-tracks');
-        const actions = card.querySelector('.session-actions');
         const opening = body.style.display === 'none';
         body.style.display = opening ? 'flex' : 'none';
-        if (actions) actions.style.display = opening ? 'flex' : 'none';
         head.classList.toggle('open', opening);
       };
       head.addEventListener('click', (e) => {
         if (head.classList.contains('no-toggle')) return;
-        if (e.target.closest('[data-session-menu]')) return;
+        if (e.target.closest('[data-session-menu], [data-track-menu]')) return;
         toggle();
       });
       head.addEventListener('keydown', (e) => {
@@ -1543,36 +1612,28 @@
       });
     });
 
-    historyList.querySelectorAll('[data-playlist-session]').forEach((btn) => {
+    historyList.querySelectorAll('[data-track-menu]').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const session = sessions.find((s) => s.id === btn.dataset.playlistSession);
-        createSpotifyPlaylist(btn, session);
+        showTrackMenu(btn, sessions.find((s) => s.id === btn.dataset.trackMenu));
       });
     });
 
-    historyList.querySelectorAll('[data-copy-session]').forEach((btn) => {
+    historyList.querySelectorAll('[data-like-session]').forEach((btn) => {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        const session = sessions.find((s) => s.id === btn.dataset.copySession);
-        const text = session.tracks.map((t) => `${t.title} by ${t.artist}`).join('\n');
-        try {
-          await navigator.clipboard.writeText(text);
-          const original = btn.textContent;
-          btn.textContent = 'Copied!';
-          setTimeout(() => (btn.textContent = original), 1500);
-        } catch (err) { /* clipboard unavailable */ }
+        const track = await toggleLike(btn.dataset.likeSession, btn.dataset.likeIndex);
+        if (track) btn.classList.toggle('liked', !!track.liked);
       });
     });
+  }
 
-    historyList.querySelectorAll('.connect-spotify-link').forEach((link) => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        switchTab('settings');
-      });
-    });
-
+  async function toggleLike(sessionId, index) {
+    try {
+      const res = await fetch(`/api/sessions/${sessionId}/tracks/${index}/like`, { method: 'POST' });
+      if (!res.ok) return null;
+      return res.json();
+    } catch (e) { return null; }
   }
 
   async function getLinkableEvents() {
@@ -1667,6 +1728,87 @@
         },
       });
     });
+  }
+
+  const trackMenu = document.getElementById('trackMenu');
+
+  function showTrackMenu(btn, session) {
+    const rect = btn.getBoundingClientRect();
+    trackMenu.style.top = `${rect.bottom + 6}px`;
+    trackMenu.style.left = `${rect.left}px`;
+    const spotifyTrackUrls = session.tracks.filter((t) => t.spotifyUrl).map((t) => t.spotifyUrl);
+
+    const items = [`<button type="button" data-action="copy"><span class="pill-dot"></span>Copy list</button>`];
+    if (spotifyTrackUrls.length) {
+      if (spotifyConnected) {
+        items.push(`<button type="button" data-action="create"><span class="pill-dot"></span>Create Spotify playlist</button>`);
+        items.push(`<button type="button" data-action="add"><span class="pill-dot"></span>Add to Spotify playlist</button>`);
+      } else {
+        items.push(`<button type="button" data-action="connect"><span class="pill-dot"></span>Connect Spotify in Settings</button>`);
+      }
+    }
+    trackMenu.innerHTML = items.join('');
+    trackMenu.hidden = false;
+
+    trackMenu.querySelector('[data-action="copy"]').addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const text = session.tracks.map((t) => `${t.title} by ${t.artist}`).join('\n');
+      try { await navigator.clipboard.writeText(text); } catch (err) { /* clipboard unavailable */ }
+      trackMenu.hidden = true;
+    });
+
+    const createBtn = trackMenu.querySelector('[data-action="create"]');
+    if (createBtn) createBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      createSpotifyPlaylist(createBtn, session);
+    });
+
+    const addBtn = trackMenu.querySelector('[data-action="add"]');
+    if (addBtn) addBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showAddToPlaylistPicker(spotifyTrackUrls);
+    });
+
+    const connectBtn = trackMenu.querySelector('[data-action="connect"]');
+    if (connectBtn) connectBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      trackMenu.hidden = true;
+      switchTab('settings');
+    });
+  }
+
+  async function showAddToPlaylistPicker(trackUrls) {
+    trackMenu.innerHTML = '<button type="button" disabled><span class="pill-dot"></span>Loading playlists…</button>';
+    try {
+      const res = await fetch('/api/spotify/playlists');
+      const playlists = await res.json();
+      if (!res.ok) throw new Error(playlists.error || 'Failed');
+      if (!playlists.length) {
+        trackMenu.innerHTML = '<button type="button" disabled><span class="pill-dot"></span>No playlists found</button>';
+        return;
+      }
+      trackMenu.innerHTML = playlists.map((p, i) => `<button type="button" data-idx="${i}"><span class="pill-dot"></span>${escapeHtml(p.name)}</button>`).join('');
+      trackMenu.querySelectorAll('button[data-idx]').forEach((opt) => {
+        opt.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          opt.textContent = 'Adding…';
+          try {
+            const addRes = await fetch(`/api/spotify/playlists/${playlists[Number(opt.dataset.idx)].id}/tracks`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ trackUrls }),
+            });
+            if (!addRes.ok) throw new Error();
+            opt.textContent = 'Added!';
+            setTimeout(() => { trackMenu.hidden = true; }, 1000);
+          } catch (err) {
+            opt.textContent = "Couldn't add";
+          }
+        });
+      });
+    } catch (err) {
+      trackMenu.innerHTML = '<button type="button" disabled><span class="pill-dot"></span>Couldn\'t load playlists</button>';
+    }
   }
 
   const confirmModalOverlay = document.getElementById('confirmModalOverlay');
@@ -1839,6 +1981,7 @@
   loadEvents();
   loadHistory();
   loadRecentlyHeard();
+  loadLikedSongs();
   pollClassStatus();
   setInterval(pollClassStatus, POLL_MS);
 </script>

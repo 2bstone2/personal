@@ -71,4 +71,26 @@ async function createPlaylist(refreshToken, name, trackUrls) {
   return { url: playlist.data.external_urls.spotify };
 }
 
-module.exports = { getAuthUrl, exchangeCodeForTokens, createPlaylist };
+// Playlists the user owns or collaborates on — used to populate the "add to
+// an existing playlist" picker.
+async function listPlaylists(refreshToken) {
+  const { access_token } = await refreshAccessToken(refreshToken);
+  const res = await axios.get(`${API_BASE}/me/playlists?limit=50`, {
+    headers: { Authorization: `Bearer ${access_token}` },
+  });
+  return (res.data.items || []).map((p) => ({ id: p.id, name: p.name }));
+}
+
+async function addTracksToPlaylist(refreshToken, playlistId, trackUrls) {
+  const { access_token } = await refreshAccessToken(refreshToken);
+  const uris = trackUrls.map(trackUriFromUrl).filter(Boolean);
+  if (!uris.length) return { added: 0 };
+  await axios.post(
+    `${API_BASE}/playlists/${playlistId}/tracks`,
+    { uris },
+    { headers: { Authorization: `Bearer ${access_token}` } }
+  );
+  return { added: uris.length };
+}
+
+module.exports = { getAuthUrl, exchangeCodeForTokens, createPlaylist, listPlaylists, addTracksToPlaylist };

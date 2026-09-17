@@ -172,6 +172,30 @@ function addTrackToSession(id, track) {
   return session;
 }
 
+// Tracks are addressed by session id + their index within that session's
+// tracks array, since they have no id of their own and the array is only
+// ever appended to (never reordered or spliced), so an index stays valid.
+function toggleTrackLiked(sessionId, trackIndex) {
+  const db = load();
+  const session = (db.sessions || []).find((s) => s.id === sessionId);
+  const track = session?.tracks?.[trackIndex];
+  if (!track) return null;
+  track.liked = !track.liked;
+  save(db);
+  return track;
+}
+
+function getLikedTracks() {
+  const db = load();
+  const liked = [];
+  (db.sessions || []).forEach((s) => {
+    s.tracks.forEach((t, i) => {
+      if (t.liked) liked.push({ ...t, sessionId: s.id, sessionTitle: s.eventTitle, trackIndex: i });
+    });
+  });
+  return liked;
+}
+
 function listSessions(limit = 50) {
   const db = load();
   return (db.sessions || []).slice(0, limit);
@@ -207,6 +231,8 @@ module.exports = {
   renameSession,
   linkSessionToEvent,
   addTrackToSession,
+  toggleTrackLiked,
+  getLikedTracks,
   listSessions,
   clearSessions,
   removeSession,
