@@ -116,11 +116,12 @@
   .tab-panel[hidden] { display: none; }
 
   /* live session line / idle block */
-  .live-session-line { align-items: center; gap: 8px; }
+  .live-session-line { align-items: center; justify-content: space-between; gap: 8px; }
   .live-session-line:not([hidden]) { display: flex; }
   .live-session-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--live); flex-shrink: 0; }
   #liveSessionText { font-size: 13px; font-weight: 700; }
-  .idle-empty { flex-direction: column; gap: 8px; padding: 24px 0; border-top: 1px solid var(--card-hairline); border-bottom: 1px solid var(--card-hairline); }
+  .idle-empty { flex-direction: column; gap: 8px; padding: 24px 0 0; border-top: 1px solid var(--card-hairline); }
+  .home-divider { border-top: 1px solid var(--card-hairline); }
   .idle-empty:not([hidden]) { display: flex; }
   .idle-heading { font-family: var(--font-display); font-weight: 800; font-stretch: 112%; font-size: 22px; letter-spacing: -0.01em; text-transform: uppercase; color: var(--secondary); }
   .idle-sub { font-size: 13px; line-height: 1.55; color: var(--text-muted); }
@@ -300,6 +301,7 @@
   #historyList { display: flex; flex-direction: column; gap: 8px; }
   .session-card { background: var(--card); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 12px; }
   .session-head { display: flex; align-items: baseline; gap: 10px; cursor: pointer; }
+  .session-head.no-toggle { cursor: default; }
   .session-caret {
     width: 0; height: 0; margin-left: 10px; flex-shrink: 0;
     border-left: 5px solid transparent; border-right: 5px solid transparent;
@@ -365,8 +367,11 @@
 
   <section class="tab-panel content-block" id="tab-home">
     <div class="live-session-line" id="liveSessionLine" hidden>
-      <div class="live-tag" id="liveTag"><span class="live-tag-dot"></span>Live</div>
       <span id="liveSessionText"></span>
+      <div class="live-tag" id="liveTag"><span class="live-tag-dot"></span>Live</div>
+    </div>
+    <div class="idle-empty" id="liveArea" hidden>
+      <div class="idle-heading">Listening…</div>
     </div>
     <div class="idle-empty" id="idleArea">
       <div class="idle-heading" id="idleHeading">Waiting to listen…</div>
@@ -399,26 +404,27 @@
     <div class="empty" id="emptyMsg" hidden>No songs caught yet.</div>
 
     <div class="actions-row">
-      <button class="export" id="exportBtn" style="display:none;">Copy list</button>
       <button class="start" id="startStopBtn">Start a session</button>
       <button class="link-btn" id="pauseBtn" hidden>Pause</button>
     </div>
     <div class="timer" id="timer" hidden>00:00</div>
 
-    <div class="settings-section" id="recentlyHeardSection" hidden>
-      <div class="section-label">Recently heard</div>
-      <div id="recentlyHeardList"></div>
-    </div>
+    <div class="home-divider"></div>
 
     <div class="settings-section" id="upcomingEventsHint">
       <div class="section-label">Upcoming events</div>
       <div class="small-note">See what's tracked and what's not in <a href="#" id="goToEventsLink">Events</a>.</div>
     </div>
+
+    <div class="settings-section" id="recentlyHeardSection" hidden>
+      <div class="section-label">Recently heard</div>
+      <div id="recentlyHeardList"></div>
+    </div>
   </section>
 
   <section class="tab-panel content-block" id="tab-events" hidden>
-    <h1 class="screen-title">Events</h1>
-    <div class="small-note">Tracked events trigger auto-listening — by keyword anywhere in the title, location, or description, or by a location that looks like a gym or studio. Check an untracked event to include it anyway.</div>
+    <h1 class="screen-title">Upcoming Events</h1>
+    <div class="small-note">Showing the next 7 days. Tracked events trigger auto-listening — by keyword anywhere in the title, location, or description, or by a location that looks like a gym or studio. Check an untracked event to include it anyway.</div>
     <input type="text" id="eventsSearch" placeholder="Search events…" />
     <div id="eventsList"></div>
     <button class="link-btn" id="addEventToggle" type="button">+ Add event</button>
@@ -613,6 +619,10 @@
   const CAPTURE_INTERVAL_MS = 60 * 1000;
   const FIRST_CAPTURE_DELAY_MS = 5000;
   const CLIP_LENGTH_MS = 7000;
+
+  const STOP_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" style="margin-right:7px;"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+  const PAUSE_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" style="margin-right:7px;"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+  const PLAY_ICON = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true" style="margin-right:7px;"><path d="M8 5v14l11-7z"/></svg>';
   const POLL_MS = 30 * 1000;
 
   const startStopBtn = document.getElementById('startStopBtn');
@@ -620,7 +630,6 @@
   const enableMicBtn = document.getElementById('enableMicBtn');
   const listEl = document.getElementById('list');
   const emptyMsg = document.getElementById('emptyMsg');
-  const exportBtn = document.getElementById('exportBtn');
   const timerEl = document.getElementById('timer');
   const colHeader = document.getElementById('colHeader');
   const trackSortWrap = document.getElementById('trackSortWrap');
@@ -629,6 +638,7 @@
   const trackSortLabel = document.getElementById('trackSortLabel');
   let trackSortOrder = 'newest';
   const liveSessionLine = document.getElementById('liveSessionLine');
+  const liveArea = document.getElementById('liveArea');
   const liveSessionText = document.getElementById('liveSessionText');
   const idleArea = document.getElementById('idleArea');
   const idleHeading = document.getElementById('idleHeading');
@@ -687,6 +697,7 @@
 
   function showLive(sessionLabel) {
     liveSessionLine.hidden = false;
+    liveArea.hidden = false;
     liveSessionText.textContent = sessionLabel;
     idleArea.hidden = true;
     nextUp.hidden = true;
@@ -697,6 +708,7 @@
 
   function showIdleMessage(text, isError) {
     liveSessionLine.hidden = true;
+    liveArea.hidden = true;
     colHeader.hidden = true;
     idleArea.hidden = false;
     idleHeading.textContent = isError ? 'Action needed' : 'Waiting to listen…';
@@ -709,6 +721,7 @@
 
   function showIdleNext(event) {
     liveSessionLine.hidden = true;
+    liveArea.hidden = true;
     colHeader.hidden = true;
     idleArea.hidden = false;
     idleHeading.textContent = 'Waiting to listen…';
@@ -733,6 +746,7 @@
   function showEventPicker(candidates) {
     pickerCandidates = candidates;
     liveSessionLine.hidden = true;
+    liveArea.hidden = true;
     colHeader.hidden = true;
     idleArea.hidden = true;
     nextUp.hidden = true;
@@ -765,13 +779,13 @@
       // Only show "No songs caught yet" once a session is actually running —
       // otherwise it just repeats the idle heading above ("Nothing yet").
       emptyMsg.style.display = running ? 'block' : 'none';
-      exportBtn.style.display = 'none';
       trackSortWrap.hidden = true;
+      listEl.style.display = 'none';
       listEl.innerHTML = '';
       return;
     }
     emptyMsg.style.display = 'none';
-    exportBtn.style.display = 'inline-block';
+    listEl.style.display = 'flex';
     trackSortWrap.hidden = tracks.length < 2;
     // tracks[] is newest-first (unshift on capture); track number must reflect
     // recognition order regardless of which end the list is displayed from.
@@ -873,18 +887,18 @@
       const session = await res.json();
       currentSessionId = session.id;
     } catch (e) { currentSessionId = null; }
-    startStopBtn.textContent = 'Stop';
+    startStopBtn.innerHTML = STOP_ICON + 'Stop';
     startStopBtn.classList.remove('start');
     startStopBtn.classList.add('stop');
     paused = false;
     elapsedBeforePause = 0;
     pauseBtn.hidden = false;
-    pauseBtn.textContent = 'Pause';
+    pauseBtn.innerHTML = PAUSE_ICON + 'Pause';
     sessionStartedAt = Date.now();
     timerEl.hidden = false;
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
-    showLive(auto ? (event?.title || 'Class') : 'Manual session');
+    showLive(auto ? (event?.title || 'Class') : 'Session');
     setTimeout(captureAndSend, FIRST_CAPTURE_DELAY_MS);
     intervalId = setInterval(captureAndSend, CAPTURE_INTERVAL_MS);
   }
@@ -900,14 +914,14 @@
     if (!running) return;
     if (paused) {
       paused = false;
-      pauseBtn.textContent = 'Pause';
+      pauseBtn.innerHTML = PAUSE_ICON + 'Pause';
       sessionStartedAt = Date.now();
       timerInterval = setInterval(updateTimer, 1000);
       captureAndSend();
       intervalId = setInterval(captureAndSend, CAPTURE_INTERVAL_MS);
     } else {
       paused = true;
-      pauseBtn.textContent = 'Resume';
+      pauseBtn.innerHTML = PLAY_ICON + 'Resume';
       elapsedBeforePause += Math.floor((Date.now() - sessionStartedAt) / 1000);
       clearInterval(timerInterval);
       clearInterval(intervalId);
@@ -976,16 +990,15 @@
     } catch (e) { section.hidden = true; }
   }
 
-  exportBtn.addEventListener('click', async () => {
-    const text = tracks.map((t) => `${t.time} — ${t.title} by ${t.artist}`).join('\n');
-    try {
-      await navigator.clipboard.writeText(text);
-      exportBtn.textContent = 'Copied!';
-      setTimeout(() => (exportBtn.textContent = 'Copy list'), 1500);
-    } catch (e) { /* clipboard unavailable */ }
+  startStopBtn.addEventListener('click', () => {
+    if (!running) return start(false);
+    showConfirmModal({
+      title: 'End session early?',
+      body: 'Are you sure you want to end this session early? Any songs already caught will be saved to History.',
+      confirmLabel: 'Stop',
+      onConfirm: stop,
+    });
   });
-
-  startStopBtn.addEventListener('click', () => (running ? stop() : start(false)));
   pauseBtn.addEventListener('click', togglePause);
 
   enableMicBtn.addEventListener('click', async () => {
@@ -1463,6 +1476,9 @@
           ? `<button class="link-btn" data-playlist-session="${s.id}">Create Spotify playlist</button>`
           : `<span class="small-note">Connect Spotify in <a href="#" class="connect-spotify-link">Settings</a> to create a playlist from these songs.</span>`);
       }
+      if (s.tracks.length) {
+        actionRows.push(`<button class="link-btn" data-copy-session="${s.id}">Copy list</button>`);
+      }
       const actionsHTML = actionRows.length
         ? `<div class="session-actions" style="display:${actionsDisplay};">${actionRows.join('')}</div>`
         : '';
@@ -1473,7 +1489,7 @@
       return `
       <div class="session-card">
         <div>
-          <div class="session-head${trackMatch ? ' open' : ''}" data-idx="${i}" role="button" tabindex="0">
+          <div class="session-head${trackMatch ? ' open' : ''}${count === 0 ? ' no-toggle' : ''}" data-idx="${i}" role="button" tabindex="${count === 0 ? -1 : 0}">
             <div class="session-title">
               <span class="session-title-text">${escapeHtml(s.eventTitle)}</span>
               <button class="session-edit-btn" type="button" data-session-menu="${s.id}" aria-label="Session options">
@@ -1481,7 +1497,7 @@
               </button>
             </div>
             <span class="session-count${count === 0 ? ' zero' : ''}">${countLabel}</span>
-            <span class="session-caret"></span>
+            ${count > 0 ? '<span class="session-caret"></span>' : ''}
           </div>
           <div class="session-meta">${sourceLabel} · ${fmtSessionDate(s)} · <span class="session-duration${s.endedAt ? '' : ' is-live'}">${fmtSessionDuration(s)}</span></div>
         </div>
@@ -1510,10 +1526,12 @@
         head.classList.toggle('open', opening);
       };
       head.addEventListener('click', (e) => {
+        if (head.classList.contains('no-toggle')) return;
         if (e.target.closest('[data-session-menu]')) return;
         toggle();
       });
       head.addEventListener('keydown', (e) => {
+        if (head.classList.contains('no-toggle')) return;
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
       });
     });
@@ -1530,6 +1548,20 @@
         e.stopPropagation();
         const session = sessions.find((s) => s.id === btn.dataset.playlistSession);
         createSpotifyPlaylist(btn, session);
+      });
+    });
+
+    historyList.querySelectorAll('[data-copy-session]').forEach((btn) => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const session = sessions.find((s) => s.id === btn.dataset.copySession);
+        const text = session.tracks.map((t) => `${t.title} by ${t.artist}`).join('\n');
+        try {
+          await navigator.clipboard.writeText(text);
+          const original = btn.textContent;
+          btn.textContent = 'Copied!';
+          setTimeout(() => (btn.textContent = original), 1500);
+        } catch (err) { /* clipboard unavailable */ }
       });
     });
 
