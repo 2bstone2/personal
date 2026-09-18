@@ -110,4 +110,12 @@ async function getUpcomingEvents(days = 7) {
   }));
 }
 
-module.exports = { getAllEvents, getClassStatus, getUpcomingEvents, eventKey };
+module.exports = {
+  getAllEvents,
+  getClassStatus,
+  getUpcomingEvents,
+  eventKey,
+  matchesKeyword,
+  matchesFitnessLocation,
+  isAutoMatch,
+};

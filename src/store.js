@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const DB_PATH = path.join(__dirname, "..", "data.json");
+const DB_PATH = process.env.EARSHOT_DB_PATH || path.join(__dirname, "..", "data.json");
 
 function load() {
   if (!fs.existsSync(DB_PATH)) {
